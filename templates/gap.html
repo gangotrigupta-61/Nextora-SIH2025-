@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Skill Gap Analyzer</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  <style>
+    body {
+      font-family: "Segoe UI", sans-serif;
+      background: linear-gradient(135deg, #e6f2f0, #f7f2fb);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+    .container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.1);
+      width: 700px;
+      margin-top: 40px;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+      color: #333;
+    }
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      font-weight: 600;
+    }
+    input, textarea, select {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin-bottom: 15px;
+      font-size: 14px;
+    }
+    .btn-group {
+      display: flex;
+      justify-content: space-between;
+    }
+    button {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease-in-out;
+      margin: 0 5px;
+    }
+    button[name="analyse"] {
+      background: #4CAF50;
+      color: white;
+    }
+    button[name="analyse"]:hover {
+      background: #43a047;
+    }
+    button[name="reset"] {
+      background: #f44336;
+      color: white;
+    }
+    button[name="reset"]:hover {
+      background: #d32f2f;
+    }
+    .result, .results, .job-market, .next-steps, .recommendations {
+      margin-top: 20px;
+      padding: 15px;
+      border-radius: 8px;
+      background: #f9f9f9;
+      line-height: 1.6;
+    }
+    .recommendations { background: #d1e7dd; border: 1px solid #a3c4b1; }
+    .skill-tag {
+      display: inline-block;
+      padding: 5px 10px;
+      border-radius: 20px;
+      margin: 4px;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    .skill-has { background-color: #2ecc71; color: white; }
+    .skill-missing { background-color: #e74c3c; color: white; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Skill Gap Analyzer</h1>
+
+    <!-- form posts to Flask -->
+    <form method="POST">
+      <label for="career">Select Career Path:</label>
+      <select id="career" name="career">
+        <option value="">--Select--</option>
+        <option value="Data Scientist" {% if request.form.career=="Data Scientist" %}selected{% endif %}>Data Scientist</option>
+        <option value="Web Developer" {% if request.form.career=="Web Developer" %}selected{% endif %}>Web Developer</option>
+        <option value="Civil Engineer" {% if request.form.career=="Civil Engineer" %}selected{% endif %}>Civil Engineer</option>
+        <option value="Graphic Designer" {% if request.form.career=="Graphic Designer" %}selected{% endif %}>Graphic Designer</option>
+        <option value="Digital Marketer" {% if request.form.career=="Digital Marketer" %}selected{% endif %}>Digital Marketer</option>
+        <option value="Financial Analyst" {% if request.form.career=="Financial Analyst" %}selected{% endif %}>Financial Analyst</option>
+        <option value="UX/UI Designer" {% if request.form.career=="UX/UI Designer" %}selected{% endif %}>UX/UI Designer</option>
+        <option value="Cybersecurity Analyst" {% if request.form.career=="Cybersecurity Analyst" %}selected{% endif %}>Cybersecurity Analyst</option>
+        <option value="Project Manager" {% if request.form.career=="Project Manager" %}selected{% endif %}>Project Manager</option>
+      </select>
+
+      <label for="skills">Your Current Skills (comma-separated):</label>
+      <textarea name="skills" id="skills" rows="3" placeholder="e.g., Python, HTML, Communication">{{ request.form.skills }}</textarea>
+
+      <div class="btn-group">
+        <button type="submit" name="analyse">Analyse Skill Gap</button>
+        <button type="submit" name="reset">Reset</button>
+      </div>
+    </form>
+
+    <!-- Gemini AI backend result -->
+    {% if result %}
+    <div class="result">
+      <h3>AI Analysis:</h3>
+      <p>{{ result }}</p>
+    </div>
+    {% endif %}
+
+    <!-- Frontend instant analysis -->
+    <div id="results" class="results" style="display:none;"></div>
+    <div id="recommendations" class="recommendations" style="display:none;"></div>
+    <div id="jobMarket" class="job-market" style="display:none;"></div>
+    <div id="nextSteps" class="next-steps" style="display:none;"></div>
+  </div>
+
+  <script>
+    // --- JavaScript Analyzer (same as your first version) ---
+    const careerSkills = {
+      "Data Scientist": ["Python","Statistics","Machine Learning","Data Visualization","SQL","Cloud Computing","Deep Learning","Data Wrangling"],
+      "Web Developer": ["HTML","CSS","JavaScript","React","Node.js","Git","API Integration","Responsive Design","UI/UX"],
+      "Civil Engineer": ["AutoCAD","Structural Analysis","Project Management","Soil Mechanics","BIM","GIS","Risk Management"],
+      "Graphic Designer": ["Photoshop","Illustrator","InDesign","Typography","Branding","Visual Communication","UX/UI Design"],
+      "Digital Marketer": ["SEO","Content Marketing","Social Media","Email Marketing","Google Analytics","PPC","Data Analysis"],
+      "Financial Analyst": ["Excel","Financial Modeling","Data Analysis","Risk Management","Accounting","SQL","Data Interpretation"],
+      "UX/UI Designer": ["Figma","Sketch","User Research","Prototyping","Wireframing","Usability Testing","Information Architecture"],
+      "Cybersecurity Analyst": ["Networking","Cryptography","Pen Testing","SIEM","Threat Intelligence","Incident Response","Cloud Security"],
+      "Project Manager": ["Agile","Scrum","Risk Management","Communication","Budgeting","Leadership","Negotiation"]
+    };
+
+    const jobMarketInsights = {
+      "Data Scientist": "Demand growing 25% per year. Avg Salary: $95K/year.",
+      "Web Developer": "Steady demand. Avg Salary: $75K/year.",
+      "Civil Engineer": "Focus on sustainable infra. Avg Salary: $70K/year.",
+      "Graphic Designer": "High creative demand. Avg Salary: $60K/year.",
+      "Digital Marketer": "Fast growth. Avg Salary: $65K/year.",
+      "Financial Analyst": "Stable demand. Avg Salary: $85K/year.",
+      "UX/UI Designer": "High demand. Avg Salary: $80K/year.",
+      "Cybersecurity Analyst": "Critical demand. Avg Salary: $100K/year.",
+      "Project Manager": "Strong demand. Avg Salary: $90K/year."
+    };
+
+    const nextStepsAdvice = {
+      "Data Scientist": "Take Python, Stats, ML courses (Coursera/Udemy).",
+      "Web Developer": "Build projects, master JS frameworks.",
+      "Civil Engineer": "Get AutoCAD/Project Mgmt certifications.",
+      "Graphic Designer": "Make a portfolio, practice Adobe suite.",
+      "Digital Marketer": "Certs in Google Analytics & SEO.",
+      "Financial Analyst": "Master Excel + financial certs.",
+      "UX/UI Designer": "Create case studies, get Figma/Sketch skills.",
+      "Cybersecurity Analyst": "Get Security+/CEH certifications.",
+      "Project Manager": "Earn PMP/CSM, practice team mgmt."
+    };
+
+    function normalizeString(str) { return str.trim().toLowerCase(); }
+
+    // Run JS analyzer after form submit (only when Analyse is clicked)
+    document.querySelector('form').addEventListener('submit', function(e) {
+      if (e.submitter && e.submitter.name === "analyse") {
+        // Let Flask handle backend AI, but also run frontend instant analyzer
+        const career = document.getElementById('career').value;
+        const skillsInput = document.getElementById('skills').value.trim();
+        if (!career || !skillsInput) return;
+
+        const userSkills = skillsInput.split(',').map(normalizeString);
+        const required = careerSkills[career] || [];
+        const hasSkills = required.filter(s => userSkills.includes(normalizeString(s)));
+        const missingSkills = required.filter(s => !userSkills.includes(normalizeString(s)));
+
+        const skillsHtml = required.map(skill => {
+          const present = userSkills.includes(normalizeString(skill));
+          return `<span class="skill-tag ${present ? 'skill-has' : 'skill-missing'}">${skill}</span>`;
+        }).join('');
+
+        document.getElementById('results').innerHTML = `
+          <h3>Skill Gap Analysis:</h3>
+          <p>${skillsHtml}</p>
+          <p>You have ${hasSkills.length} of ${required.length} core skills.</p>
+          <p>Missing: ${missingSkills.length ? missingSkills.join(', ') : "None"}</p>`;
+        document.getElementById('jobMarket').innerHTML = `<h3>Job Market:</h3><p>${jobMarketInsights[career]}</p>`;
+        document.getElementById('nextSteps').innerHTML = `<h3>Next Steps:</h3><p>${nextStepsAdvice[career]}</p>`;
+
+        document.getElementById('results').style.display = 'block';
+        document.getElementById('jobMarket').style.display = 'block';
+        document.getElementById('nextSteps').style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>

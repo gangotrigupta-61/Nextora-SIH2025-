@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="./static/images/pogo.png">
+  
+    <title>Nextora</title>
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+
+    <style>
+        /* General Styles and CSS Reset */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f3f4f6 0%, #e0e7ff 100%);
+            color: #1f2937;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            scroll-behavior: smooth;
+            transition: background-color 0.4s ease, color 0.4s ease;
+        }
+
+        /* Class to disable body scrolling */
+        body.no-scroll {
+            overflow: hidden;
+        }
+
+        /* --- Navigation Bar --- */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(90deg, #4F46E5, #6366F1);
+            padding: 15px 60px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            border-bottom-left-radius: 15px;
+            border-bottom-right-radius: 15px;
+            transition: background 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-grow: 1;
+        }
+
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 20px;
+            font-weight: 600;
+            transition: color 0.3s, transform 0.3s;
+        }
+
+        nav a:hover {
+            color: #FBBF24;
+            transform: scale(1.1);
+        }
+
+        /* --- User Tools Group (Profile, Theme, Notifications) --- */
+        .user-tools {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        /* Icons and Buttons */
+        .user-tools button {
+            background: transparent;
+            border: none;
+            font-size: 1.8em;
+            cursor: pointer;
+            color: white;
+            transition: transform 0.3s, color 0.3s;
+        }
+        
+        .user-tools button:hover {
+            transform: scale(1.1);
+        }
+
+        .profile-wrapper {
+            position: relative;
+        }
+
+        #profile-icon {
+            background-color: #FBBF24;
+            color: #4F46E5;
+            font-weight: 600;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #profile-icon:hover {
+            background-color: #fce392;
+        }
+
+        #notification-count {
+            background-color: #FBBF24;
+            color: #4F46E5;
+            font-size: 0.7em;
+            font-weight: 600;
+            border-radius: 50%;
+            padding: 2px 6px;
+            position: absolute;
+            top: -5px;
+            right: -8px;
+            min-width: 18px;
+            text-align: center;
+        }
+
+        /* --- Dropdown Menus --- */
+        .dropdown {
+            position: absolute;
+            right: 0;
+            top: 50px;
+            background: white;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+            border-radius: 10px;
+            width: 250px;
+            z-index: 200;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-20px);
+            transition: opacity 0.3s ease, transform 0.3s ease, background-color 0.4s ease;
+        }
+
+        .dropdown.active {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown ul {
+            list-style: none;
+            padding: 10px;
+            margin: 0;
+        }
+
+        .dropdown ul li a {
+            text-decoration: none;
+            color: #1f2937;
+            display: block;
+            padding: 12px 16px;
+            border-radius: 8px;
+            transition: background-color 0.2s, color 0.2s;
+        }
+
+        .dropdown ul li a:hover {
+            background-color: #f3f4f6;
+        }
+
+        .notification-dropdown ul li {
+            border-bottom: 1px solid #e0e7ff;
+            word-wrap: break-word;
+            transition: background 0.2s;
+        }
+
+        .notification-dropdown ul li:last-child {
+            border-bottom: none;
+        }
+
+        .notification-dropdown ul li:hover {
+            background: #f3f4f6;
+        }
+
+        .notification-dropdown a.view-all {
+            display: block;
+            text-align: center;
+            padding: 12px;
+            background: #4f46e5;
+            color: white;
+            border-radius: 0 0 10px 10px;
+            text-decoration: none;
+            transition: background 0.3s;
+        }
+
+        .notification-dropdown a.view-all:hover {
+            background: #6366f1;
+        }
+
+        /* --- Dark Mode Styles --- */
+        body.dark-mode {
+            background: #1a202c;
+            color: #e2e8f0;
+        }
+
+        body.dark-mode nav {
+            background: #2d3748;
+            box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);
+        }
+
+        body.dark-mode nav a {
+            color: #e2e8f0;
+        }
+        
+        body.dark-mode .user-tools button {
+             color: #e2e8f0;
+        }
+        
+        body.dark-mode #profile-icon {
+            background-color: #4f46e5;
+            color: #e2e8f0;
+        }
+
+        body.dark-mode .dropdown {
+            background: #2d3748;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+        }
+
+        body.dark-mode .dropdown ul li a {
+            color: #e2e8f0;
+        }
+
+        body.dark-mode .dropdown ul li a:hover {
+            background-color: #4a5568;
+        }
+
+        body.dark-mode .hero h1 {
+            color: #9f7aea;
+        }
+
+        body.dark-mode .card {
+            background: #2d3748;
+            color: #e2e8f0;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        body.dark-mode .card:hover {
+            background: #4a5568;
+        }
+
+        body.dark-mode footer {
+            background-color: #2d3748;
+        }
+
+        body.dark-mode footer h4 {
+            color: #9f7aea;
+        }
+
+        body.dark-mode footer a {
+            color: #e2e8f0;
+        }
+
+        /* --- Other existing styles (untouched) --- */
+        .hero {
+            text-align: center;
+            padding: 150px 40px 120px 40px;
+            text-shadow: 1px 1px 8px rgba(79,70,229,0.4);  
+        }
+
+        .hero h1 {
+            font-size: 3em;
+            margin-bottom: 30px;
+            color: #4F46E5;
+        }
+
+        .hero p {
+            font-size: 1.35em;
+            margin-bottom: 40px;
+            line-height: 1.6;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-btn {
+            display: inline-block;
+            padding: 15px 40px;
+            background-color: #4F46E5;
+            color: white;
+            font-weight: 600;
+            border-radius: 12px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .cta-btn:hover {
+            background-color: #6366F1;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            max-width: 1400px;
+            margin: 20px auto;
+            padding: 0 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            text-decoration: none;
+            color: #1f2937;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            transition: transform 0.4s, box-shadow 0.4s, background 0.4s;
+        }
+
+        .card:hover {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            background: #E0E7FF;
+        }
+
+        .card h3 {
+            color: #4F46E5;
+            margin-bottom: 18px;
+            font-size: 1.65em;
+        }
+
+        .card p {
+            font-size: 1.05em;
+            line-height: 1.6;
+        }
+
+        footer {
+            margin-top: 80px;
+            background-color: #4F46E5;
+            color: white;
+            font-weight: 500;
+            padding: 50px 40px 30px 40px;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+            transition: background-color 0.4s ease;
+        }
+
+        .footer-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            max-width: 1400px;
+            margin: auto;
+        }
+
+        .footer-column {
+            flex: 1 1 200px;
+            margin: 20px;
+        }
+
+        .footer-column h4 {
+            font-size: 1.25em;
+            margin-bottom: 15px;
+            color: #FBBF24;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-column ul li a {
+            color: white;
+            text-decoration: none;
+            transition: 0.3s;
+        }
+
+        .footer-column ul li a:hover {
+            color: #FBBF24;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 0.95em;
+            color: #e0e7ff;
+        }
+
+        /* --- Modal Styles --- */
+        .modal-backdrop {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            z-index: 500;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.4s ease, visibility 0s linear 0.4s;
+        }
+
+        .modal-backdrop.active {
+            opacity: 1;
+            visibility: visible;
+            transition-delay: 0s;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 20px 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            width: 90%;
+            max-width: 350px;
+            transform: translateY(-50px);
+            transition: transform 0.4s ease;
+        }
+
+        .modal-backdrop.active .modal-content {
+            transform: translateY(0);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            font-size: 1.8em;
+            color: #4F46E5;
+        }
+
+        .modal-close-btn {
+            background: none;
+            border: none;
+            font-size: 2em;
+            color: #a0aec0;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .modal-close-btn:hover {
+            color: #1a202c;
+        }
+
+        .modal-body ul {
+            list-style: none;
+        }
+
+        .modal-body li {
+            margin-bottom: 15px;
+        }
+
+        .modal-body a {
+            display: block;
+            padding: 12px 20px;
+            background-color: #f3f4f6;
+            color: #1f2937;
+            text-decoration: none;
+            border-radius: 10px;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .modal-body a:hover {
+            background-color: #e0e7ff;
+            transform: translateX(5px);
+        }
+
+        /* Dark Mode Modal */
+        body.dark-mode .modal-content {
+            background-color: #2d3748;
+            color: #e2e8f0;
+        }
+
+        body.dark-mode .modal-header h2 {
+            color: #6366F1;
+        }
+
+        body.dark-mode .modal-close-btn {
+            color: #94a3b8;
+        }
+
+        body.dark-mode .modal-close-btn:hover {
+            color: #e2e8f0;
+        }
+
+        body.dark-mode .modal-body a {
+            background-color: #4a5568;
+            color: #e2e8f0;
+        }
+
+        body.dark-mode .modal-body a:hover {
+            background-color: #6366f1;
+        }
+
+        @media (max-width: 1024px) {
+            .hero h1 {
+                font-size: 2.6em;
+            }
+
+            .hero p {
+                font-size: 1.25em;
+            }
+
+            nav {
+                padding: 15px 30px;
+            }
+
+            .cards {
+                padding: 0 30px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            nav {
+                flex-direction: column;
+            }
+
+            .nav-links {
+                justify-content: center;
+                flex-wrap: wrap;
+                width: 100%;
+                margin-top: 10px;
+            }
+
+            nav a {
+                margin: 10px 10px;
+            }
+
+            .hero h1 {
+                font-size: 2.2em;
+            }
+
+            .hero p {
+                font-size: 1.1em;
+            }
+
+            .footer-container {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .footer-column {
+                margin: 20px 0;
+            }
+            
+            .user-tools {
+                flex-direction: row;
+                justify-content: center;
+                width: 100%;
+                margin-top: 10px;
+                gap: 15px;
+            }
+            
+            .dropdown {
+                width: 90vw;
+                left: 50%;
+                transform: translateX(-50%) translateY(-20px);
+                right: auto;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div style="font-size: 1.5em; font-weight: bold; color: white;">Nextora</div>
+        <div class="nav-links">
+            <a href="{{ url_for('home') }}">Home</a>
+            <a href="{{ url_for('about') }}">About</a>
+            <a href="{{ url_for('help') }}">Help</a>
+            <a href="{{ url_for('FAQs') }}">FAQs</a>
+           
+            
+        </div>
+        <!-- User-specific tools grouped on the right -->
+        <div class="user-tools">
+            <!-- Profile Icon with Dropdown -->
+            <div class="profile-wrapper">
+                <button id="profile-icon" title="Profile">
+                    <span class="initials">P</span>
+                </button>
+                <div id="profile-dropdown" class="dropdown">
+                    <ul>
+                        <li><a href="{{ url_for('profile') }}">My Profile</a></li>
+                       
+                        <!--    <li><a href="#settings">Settings</a></li>
+                        <li><a href="#sign-out">Sign Out</a></li>        -->
+
+                    </ul>
+                </div>
+            </div>
+
+            
+            <!-- Language Switcher Button -->
+            <button id="language-switcher-btn" title="Select Language">
+                <i class="fa-solid fa-globe"></i>
+            </button>
+            
+            <!-- Speech Button -->
+            <button id="speech-btn" title="Speak Page Content">
+                <i class="fa-solid fa-microphone-alt"></i>
+            </button>
+     
+
+           <!-- Feature Working --> 
+
+            <!-- Theme Switcher -->
+            <button id="theme-switcher" title="Toggle Light/Dark Mode">
+                <i class="fa-solid fa-sun"></i>
+            </button>
+            
+            <button><a href="{{ url_for('chatbot') }}">🤖</a></li></button>
+
+         <!-- Feature Not Working -->
+
+            <!-- Notification Bell Icon with Dropdown -->
+            <div class="notification-wrapper">
+                <button id="notification-bell" title="Notifications">
+                    <i class="fa-solid fa-bell"></i>
+                    <span id="notification-count">0</span>
+                </button>
+                <div id="notification-dropdown" class="dropdown notification-dropdown">
+                    <ul id="notification-list">
+                        <li>Please log in to see notifications</li>
+                    </ul>
+                    <a href="#" class="view-all">View All</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Generic Modal for new features -->
+    <div id="generic-modal" class="modal-backdrop">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title"></h2>
+                <button class="modal-close-btn">&times;</button>
+            </div>
+            <div class="modal-body" id="modal-body-content">
+                hi
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <h1 id="hero-heading">Shape Your Future with Nextora</h1>
+        <p id="hero-subheading">Explore career paths, personalized tests, and resources to guide you toward a rewarding professional journey.</p>
+        <a href="{{ url_for('aptitude') }}" class="cta-btn" id="cta-button-text">Take Your Career Quiz</a>
+    </section>
+
+    <!-- Feature Cards -->
+    <div class="cards">
+        <a href="{{ url_for('guidance') }}" class="card" id="card-guidance">
+            <h3>📋 Guidance </h3>
+            <p>Discover your aptitudes and interests to guide your future career choices.</p>
+        </a>
+        <a href="{{ url_for('mentor') }}" class="card" id="card-suggestions">
+            <h3>🤝 Mentorship Hub</h3>
+            <p>Connect with experienced professionals for guidance and valuable insights.</p>
+
+        </a>
+        <a href="{{ url_for('resume') }}" class="card" id="card-resume">
+            <h3>📄 Resume Builder</h3>
+            <p>Create a professional resume and cover letter with our easy-to-use tools.</p>
+        </a>
+
+        <a href="{{ url_for('interview') }}" class="card" id="card-jobs">
+           <h3>💾 Interview</h3>
+            <p>Quick access to your saved career articles, job listings, and materials.</p>
+        </a>
+
+        <a href="{{ url_for('gap') }}" class="card" id="card-notifications">
+           <h3>📈 Skill Gap Analyzer</h3>
+            <p>Find out what skills you need to learn to get your dream job.</p>
+        </a>
+
+        <a href="{{ url_for('college') }}" class="card" id="card-saved">
+           <h3>📚 Nearby Degree Colleges</h3>
+            <p>Find the best nearby colleges.</p>
+
+        </a>
+
+    </div>
+
+    <!-- Footer Section -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-column about">
+                <h4>Nextora</h4>
+                <p>Empowering your career growth with personalized guidance, tests, and career insights.</p>
+            </div>
+            <div class="footer-column links">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="{{ url_for('home') }}">Home</a></li>
+                    <li><a href="{{ url_for('about') }}">About</a></li>
+                    <li><a href="{{ url_for('profile') }}">Profile</a></li>
+                    <li><a href="{{ url_for('help') }}">Help</a></li>
+                    <li><a href="{{ url_for('FAQs') }}">FAQs</a></li>
+                </ul>
+            </div>
+            <div class="footer-column contact">
+                <h4>Contact Us</h4>
+                <p>Email: support@nextora.com</p>
+                <p>Phone: +91 98765 43210</p>
+            </div>
+            <div class="footer-column social">
+                <h4>Follow & Subscribe</h4>
+                <div class="social-icons">
+                    <a href="#" title="LinkedIn">🔗</a>
+                    <a href="#" title="Twitter">🐦</a>
+                    <a href="#" title="Instagram">📸</a>
+                </div>
+                <div class="newsletter">
+                    <input type="email" placeholder="Your email" />
+                    <button>Subscribe</button>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            © 2025 Nextora. All rights reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms</a>
+        </div>
+    </footer>
+
+    <script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.6.8/firebase-firestore.js"></script>
+
+<script>
+    // Your Firebase configuration
+    const firebaseConfig = {
+        apiKey: "YOUR_API_KEY",
+        authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+        projectId: "YOUR_PROJECT_ID",
+        storageBucket: "YOUR_PROJECT_ID.appspot.com",
+        messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+        appId: "YOUR_APP_ID"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    const bell = document.getElementById('notification-bell');
+    const dropdown = document.getElementById('notification-dropdown');
+    const notificationList = document.getElementById('notification-list');
+    const notificationCount = document.getElementById('notification-count');
+    const body = document.body;
+
+    const profileIcon = document.getElementById('profile-icon');
+    const profileDropdown = document.getElementById('profile-dropdown');
+    const themeSwitcher = document.getElementById('theme-switcher');
+    const languageSwitcherBtn = document.getElementById('language-switcher-btn');
+    const speechBtn = document.getElementById('speech-btn');
+    const modalCloseBtns = document.querySelectorAll('.modal-close-btn');
+    const genericModal = document.getElementById('generic-modal');
+    const genericModalTitle = document.getElementById('modal-title');
+    const genericModalBody = document.getElementById('modal-body-content');
+
+    // Global variable to track the current language and speech state
+    let currentLang = 'en';
+    let isSpeaking = false;
+    let isListening = false;
+
+    // Check for Web Speech API support
+    window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (!window.SpeechRecognition || !window.speechSynthesis) {
+        speechBtn.disabled = true;
+        speechBtn.style.opacity = '0.5';
+        speechBtn.style.cursor = 'not-allowed';
+        console.error("Speech recognition or synthesis not supported in this browser.");
+    }
+    
+    // --- Speech Recognition Setup ---
+    const recognition = new SpeechRecognition();
+    recognition.interimResults = false;
+    recognition.continuous = false; 
+    recognition.lang = 'en-US';
+
+    // Event handler for when speech is recognized
+    recognition.onresult = (event) => {
+        const transcript = event.results[0][0].transcript;
+        console.log('Recognized speech:', transcript);
+        
+        let responseText;
+        const lowerTranscript = transcript.toLowerCase();
+        
+        // Handle "stop speaking" command
+        if (lowerTranscript.includes('stop speaking')) {
+            window.speechSynthesis.cancel();
+            showMessageBox("Stopped speaking.", 'info');
+            // Re-enable listening after a brief moment
+            setTimeout(() => startListening(), 500);
+            return;
+        }
+
+        // Check for keywords and provide a specific, solved solution
+        if (lowerTranscript.includes('class 10') || lowerTranscript.includes('10th class')) {
+            responseText = `That's a great question! For a student in Class 10, the best place to start is with our 'Career Quiz' and 'Guidance' sections. You can visit these sections on the main page to find clear advice and career paths.`;
+        } else if (lowerTranscript.includes('job') || lowerTranscript.includes('internship')) {
+            responseText = `Based on your goal to find a job or internship, you can use our 'Jobs and Internships' feature to find curated opportunities.`;
+        } else if (lowerTranscript.includes('career') || lowerTranscript.includes('advise')) {
+            responseText = `To get started with career advice, you should try taking our 'Career Quiz' in the hero section.`;
+        } else {
+            responseText = `I heard you say, "${transcript}". You can ask me about anything related to your career. For example, 'How do I improve my resume?'`;
+        }
+        
+        showMessageBox(responseText, 'info');
+        
+        // Speak the response back to the user and restart listening after it's done
+        speakText(responseText, () => {
+            startListening();
+        });
+        
+        // Explicitly stop listening right after a result is received to prevent re-triggering
+        recognition.stop();
+    };
+
+    // Event handler for no speech recognized
+    recognition.onnomatch = () => {
+        showMessageBox("I didn't quite catch that. Please try again.", 'info');
+        speakText(translations[currentLang].speech_try_again, () => {
+            startListening();
+        });
+    };
+    
+    // Event handler for when recognition ends (e.g., after the user stops speaking)
+    recognition.onend = () => {
+        isListening = false;
+        speechBtn.innerHTML = '<i class="fa-solid fa-microphone-alt"></i>';
+    };
+
+    // Event handler for recognition errors
+    recognition.onerror = (event) => {
+        console.error('Speech recognition error:', event.error);
+        isListening = false;
+        speechBtn.innerHTML = '<i class="fa-solid fa-microphone-alt"></i>';
+        if (event.error !== 'no-speech') {
+            showMessageBox("Speech recognition error. Please check your browser permissions.", 'error');
+        }
+    };
+
+    // Helper function to start the speech recognition
+    function startListening() {
+        if (isSpeaking) {
+            console.log('Currently speaking, cannot start listening.');
+            return;
+        }
+        if (!isListening) {
+            isListening = true;
+            speechBtn.innerHTML = '<i class="fa-solid fa-microphone-alt" style="color: red;"></i>';
+            console.log('Listening for user input...');
+            try {
+                recognition.start();
+            } catch (e) {
+                console.error('Recognition start error:', e);
+                isListening = false;
+                speechBtn.innerHTML = '<i class="fa-solid fa-microphone-alt"></i>';
+            }
+        }
+    }
+
+    // Helper function to speak text
+    function speakText(text, onEndCallback = null) {
+        if (!'speechSynthesis' in window) {
+            showMessageBox("Speech synthesis is not supported in your browser.", 'error');
+            return;
+        }
+        
+        // Cancel any ongoing speech
+        window.speechSynthesis.cancel();
+
+        const utterance = new SpeechSynthesisUtterance(text);
+        const langMap = {
+            'en': 'en-US',
+            'hi': 'hi-IN',
+            'mr': 'mr-IN',
+            'te': 'te-IN',
+            'bn': 'bn-BD'
+        };
+        utterance.lang = langMap[currentLang] || 'en-US';
+        
+        utterance.onstart = () => { 
+            isSpeaking = true; 
+            isListening = false; // Stop listening while speaking
+            recognition.stop(); // Stop recognition to prevent overlap
+        };
+        utterance.onend = () => {
+            isSpeaking = false;
+            if (onEndCallback) {
+                onEndCallback();
+            }
+        };
+        utterance.onerror = (event) => {
+            console.error('Speech synthesis error:', event);
+            isSpeaking = false;
+            if (onEndCallback) {
+                onEndCallback();
+            }
+        };
+        
+        window.speechSynthesis.speak(utterance);
+    }
+    
+    // --- Event Listeners ---
+    speechBtn.addEventListener('click', () => {
+        if (isSpeaking) {
+            window.speechSynthesis.cancel();
+            isSpeaking = false;
+            showMessageBox("Speech stopped.", 'info');
+            // Re-enable listening after stopping speech
+            setTimeout(() => startListening(), 500);
+        } else if (isListening) {
+            recognition.stop(); // Manual stop
+            isListening = false;
+            speechBtn.innerHTML = '<i class="fa-solid fa-microphone-alt"></i>';
+            showMessageBox("Listening stopped.", 'info');
+        } else {
+            // First time click or after stopping, start the conversation
+            const greeting = translations[currentLang].speech_start;
+            showMessageBox(greeting, 'info');
+            speakText(greeting, () => {
+                startListening();
+            });
+        }
+    });
+
+    // Function to fetch and display notifications
+    function fetchNotifications(userId) {
+        db.collection('users')
+            .doc(userId)
+            .collection('notifications')
+            .orderBy('timestamp', 'desc')
+            .onSnapshot(snapshot => {
+                notificationList.innerHTML = ''; // Clear existing notifications
+                let unreadCount = 0;
+
+                if (snapshot.empty) {
+                    const li = document.createElement('li');
+                    li.textContent = 'No new notifications.';
+                    notificationList.appendChild(li);
+                } else {
+                    snapshot.forEach(doc => {
+                        const data = doc.data();
+                        const li = document.createElement('li');
+                        const link = data.link || '#';
+                        li.innerHTML = `<a href="${link}">${data.text}</a>`;
+                        notificationList.appendChild(li);
+                        if (!data.read) {
+                            unreadCount++;
+                        }
+                    });
+                }
+                notificationCount.textContent = unreadCount > 0 ? unreadCount : '0';
+                notificationCount.style.display = unreadCount > 0 ? 'block' : 'none';
+            });
+    }
+
+    // Check for user login state
+    auth.onAuthStateChanged(user => {
+        if (user) {
+            fetchNotifications(user.uid);
+        } else {
+            notificationList.innerHTML = '<li>Please log in to see notifications</li>';
+            notificationCount.textContent = '0';
+            notificationCount.style.display = 'none';
+        }
+    });
+
+    // Toggle dropdown visibility and scrolling on bell click
+    bell.addEventListener('click', (event) => {
+        event.stopPropagation();
+        dropdown.classList.toggle('active');
+        profileDropdown.classList.remove('active'); // Close other dropdown
+        body.classList.toggle('no-scroll', dropdown.classList.contains('active'));
+    });
+
+    // Toggle profile dropdown visibility
+    profileIcon.addEventListener('click', (event) => {
+        event.stopPropagation();
+        profileDropdown.classList.toggle('active');
+        dropdown.classList.remove('active'); // Close other dropdown
+        body.classList.toggle('no-scroll', profileDropdown.classList.contains('active'));
+    });
+    
+    // Hide dropdowns when clicking outside
+    window.addEventListener('click', (event) => {
+        if (!bell.contains(event.target) && !dropdown.contains(event.target) &&
+            !profileIcon.contains(event.target) && !profileDropdown.contains(event.target)) {
+            
+            dropdown.classList.remove('active');
+            profileDropdown.classList.remove('active');
+            
+        }
+    });
+    
+    // --- Modal Functions ---
+    function showModal(title, content) {
+        genericModalTitle.textContent = title;
+        genericModalBody.innerHTML = content;
+        genericModal.classList.add('active');
+        body.classList.add('no-scroll');
+    }
+    
+    function hideModal(modalElement) {
+        modalElement.classList.remove('active');
+        body.classList.remove('no-scroll');
+    }
+    
+    modalCloseBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+            hideModal(genericModal);
+        });
+    });
+
+    // Simple message box for feedback
+    function showMessageBox(message, type = 'info') {
+        // You would implement a visual alert system here
+        console.log(`[Message - ${type.toUpperCase()}] ${message}`);
+        // For a simple implementation, you can use a modal
+        // showModal('Speech Assistant', message);
+    }
+    
+    // Translation data
+    const translations = {
+        en: {
+            nav_home: "Home",
+            nav_about: "About",
+            nav_help: "Help",
+            nav_faqs: "FAQs",
+            hero_heading: "Shape Your Future with Nextora",
+            hero_subheading: "Explore career paths, personalized tests, and resources to guide you toward a rewarding professional journey.",
+            cta_button: "Take Your Career Quiz",
+            guidance_heading: "📋 Guidance",
+            guidance_desc: "Discover your aptitudes and interests to guide your future career choices.",
+            suggestions_heading: "💼 Career Suggestions",
+            suggestions_desc: "Explore career options based on your aptitude and aspirations.",
+            learning_heading: "📚 Learning Resources",
+            learning_desc: "Recommended courses, books, and tutorials to enhance skills.",
+            jobs_heading: "🚀 Jobs & Internships",
+            jobs_desc: "Find handpicked job and internship opportunities matching your profile.",
+            notifications_heading: "🔔 Notifications",
+            notifications_desc: "Get career advice, job updates, and timely alerts.",
+            saved_heading: "💾 Saved Resources",
+            saved_desc: "Quick access to your saved career articles, job listings, and materials.",
+            speech_start: "Hello, I am Nextora, your personal career advisor. Please tell me about your career needs.",
+            speech_try_again: "I didn't quite catch that. Please try again."
+        },
+        hi: {
+            // Hindi translations
+            nav_home: "मुख्य पृष्ठ",
+            nav_about: "हमारे बारे में",
+            nav_help: "सहायता",
+            nav_faqs: "सामान्य प्रश्न",
+            hero_heading: "Nextora के साथ अपने भविष्य को आकार दें",
+            hero_subheading: "अपने पेशेवर यात्रा को सही दिशा देने के लिए करियर पथ, व्यक्तिगत परीक्षण और संसाधनों का अन्वेषण करें।",
+            cta_button: "अपना करियर क्विज लें",
+            guidance_heading: "📋 मार्गदर्शन",
+            guidance_desc: "अपने भविष्य के करियर विकल्पों का मार्गदर्शन करने के लिए अपनी क्षमताओं और रुचियों की खोज करें।",
+            suggestions_heading: "💼 करियर सुझाव",
+            suggestions_desc: "अपनी योग्यता और आकांक्षाओं के आधार पर करियर के विकल्पों का पता लगाएं।",
+            learning_heading: "📚 सीखने के संसाधन",
+            learning_desc: "कौशल को बढ़ाने के लिए अनुशंसित पाठ्यक्रम, किताबें और ट्यूटोरियल।",
+            jobs_heading: "🚀 नौकरियाँ और इंटर्नशिप",
+            jobs_desc: "अपनी प्रोफाइल से मेल खाने वाली चुनी हुई नौकरियाँ और इंटर्नशिप के अवसर खोजें।",
+            notifications_heading: "🔔 सूचनाएं",
+            notifications_desc: "करियर सलाह, नौकरी के अपडेट और समय पर अलर्ट प्राप्त करें।",
+            saved_heading: "💾 सहेजे गए संसाधन",
+            saved_desc: "अपने सहेजे गए करियर लेखों, नौकरी सूचियों और सामग्रियों तक त्वरित पहुंच।",
+            speech_start: "नमस्ते, मैं Nextora, आपका व्यक्तिगत करियर सलाहकार हूँ। कृपया मुझे अपनी करियर की जरूरतों के बारे में बताएं।",
+            speech_try_again: "मैं ठीक से सुन नहीं पाया। कृपया फिर से कोशिश करें।"
+        }
+    };
+    
+    // Initial content update for language
+    function updateContent(lang) {
+        document.getElementById('nav-home').textContent = translations[lang].nav_home;
+        document.getElementById('nav-about').textContent = translations[lang].nav_about;
+        document.getElementById('nav-help').textContent = translations[lang].nav_help;
+        document.getElementById('nav-faqs').textContent = translations[lang].nav_faqs;
+        document.getElementById('hero-heading').textContent = translations[lang].hero_heading;
+        document.getElementById('hero-subheading').textContent = translations[lang].hero_subheading;
+        document.getElementById('cta-button-text').textContent = translations[lang].cta_button;
+        document.getElementById('card-guidance').querySelector('h3').textContent = translations[lang].guidance_heading;
+        document.getElementById('card-guidance').querySelector('p').textContent = translations[lang].guidance_desc;
+        document.getElementById('card-suggestions').querySelector('h3').textContent = translations[lang].suggestions_heading;
+        document.getElementById('card-suggestions').querySelector('p').textContent = translations[lang].suggestions_desc;
+        document.getElementById('card-learning').querySelector('h3').textContent = translations[lang].learning_heading;
+        document.getElementById('card-learning').querySelector('p').textContent = translations[lang].learning_desc;
+        document.getElementById('card-jobs').querySelector('h3').textContent = translations[lang].jobs_heading;
+        document.getElementById('card-jobs').querySelector('p').textContent = translations[lang].jobs_desc;
+        document.getElementById('card-notifications').querySelector('h3').textContent = translations[lang].notifications_heading;
+        document.getElementById('card-notifications').querySelector('p').textContent = translations[lang].notifications_desc;
+        document.getElementById('card-saved').querySelector('h3').textContent = translations[lang].saved_heading;
+        document.getElementById('card-saved').querySelector('p').textContent = translations[lang].saved_desc;
+    }
+    
+    // Language switching functionality
+    languageSwitcherBtn.addEventListener('click', () => {
+        if (currentLang === 'en') {
+            currentLang = 'hi'; // Switch to Hindi
+        } else {
+            currentLang = 'en'; // Switch back to English
+        }
+        updateContent(currentLang);
+        showMessageBox(`Language switched to ${currentLang === 'en' ? 'English' : 'Hindi'}.`, 'info');
+    });
+
+    // Theme switching functionality
+    themeSwitcher.addEventListener('click', () => {
+        body.classList.toggle('dark-mode');
+        const isDarkMode = body.classList.contains('dark-mode');
+        themeSwitcher.innerHTML = isDarkMode ? '<i class="fa-solid fa-moon"></i>' : '<i class="fa-solid fa-sun"></i>';
+    });
+</script>
+</body>
+
+</html>

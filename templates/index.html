@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="./static/images/pogo.png">
+  <title>Nextora</title>
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    font-family: "Segoe UI", sans-serif;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background: linear-gradient(to bottom right, #c9f7f5, #fbd6ec);
+    animation: gradientShift 20s ease infinite;
+  }
+  @keyframes gradientShift {
+    0% { background: linear-gradient(to bottom right, #c9f7f5, #fbd6ec); }
+    50% { background: linear-gradient(to bottom right, #e0f7fa, #ffe0f0); }
+    100% { background: linear-gradient(to bottom right, #c9f7f5, #fbd6ec); }
+  }
+
+  .page-wrapper {
+    position: absolute;
+    inset: 2%;
+    border: 3px solid #5c6bc0;
+    border-radius: 20px;
+    box-shadow: 0px 6px 20px rgba(0,0,0,0.15);
+    overflow: hidden;
+  }
+
+  /* Page1 */
+  .page1 {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    transition: opacity 1s ease;
+    padding: 15px;
+  }
+
+  .branding-box {
+    background: white;
+    border-radius: 15px;
+    padding: 25px 30px;
+    box-shadow: 0px 6px 15px rgba(0,0,0,0.15);
+    text-align: center;
+    animation: brandingAppear 2s ease forwards;
+    opacity: 0;
+    max-width: 85%;
+  }
+  @keyframes brandingAppear {
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .branding-box img {
+    width: 120px;  /* smaller NEXTORA logo */
+    height: 120px;
+    object-fit: cover;
+    border-radius: 20%;
+    border: 2px solid #5c6bc0;
+    box-shadow: 0px 4px 15px rgba(0,0,0,0.2);
+    margin-bottom: 15px;
+  }
+  .branding-box h1 {
+    font-size: clamp(1.6rem, 5vw, 2.8rem);
+    color: #4dd0e1;
+    margin: 0;
+    font-family: "Poppins", sans-serif;
+    letter-spacing: 0.5px;
+  }
+  .branding-box h2 {
+    font-family: "Lucida Handwriting", cursive;
+    font-size: clamp(1rem, 3.5vw, 1.6rem);
+    color: #2f2f2f;
+    margin: 15px 0 0;
+    font-weight: 600;
+  }
+  .branding-box p {
+    font-size: clamp(0.85rem, 2.5vw, 1rem);
+    color: #444;
+    margin: 10px 0 0;
+    font-style: italic;
+    line-height: 1.3;
+  }
+
+  .team-logo {
+    margin-top: 40px;  /* closer gap */
+    opacity: 0;
+    animation: teamLogoAppear 2.5s ease forwards;
+    animation-delay: 1s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  @keyframes teamLogoAppear {
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .team-logo img {
+    width: 120px;   /* same as NEXTORA logo */
+    height: 120px;
+    object-fit: cover;
+    border-radius: 20%;
+    border: 2px solid #4dd0e1;
+    box-shadow: 0px 4px 12px rgba(0,0,0,0.25);
+  }
+  .group-text {
+    opacity: 0;
+    margin-top: 8px;
+    font-size: 0.9rem;
+    color: #2f2f2f;
+    font-style: italic;
+    transition: opacity 1.2s ease;
+  }
+  .group-text.show {
+    opacity: 1;
+  }
+
+  /* Page2 */
+  .page2 {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 2vh;
+    transition: opacity 1s ease;
+  }
+
+  /* Graduation hat SVG animation */
+  .logo {
+    width: 160px;
+    opacity: 1;
+  }
+  .logo path {
+    fill: none;
+    stroke: #5c6bc0;
+    stroke-width: 3;
+    stroke-dasharray: 500;
+    stroke-dashoffset: 500;
+  }
+  .logo path.draw {
+    animation: drawLine 1.5s ease forwards;
+  }
+  .logo path.draw.delay1 {
+    animation-delay: 0.4s;
+  }
+  .logo path.draw.delay2 {
+    animation-delay: 0.8s;
+  }
+  @keyframes drawLine {
+    to { stroke-dashoffset: 0; }
+  }
+
+  /* Typing */
+  .text {
+    font-size: clamp(1.2rem, 4vw, 2.2rem);
+    font-weight: 700;
+    background: linear-gradient(90deg, #1e3c72, #2a5298, #00c6ff);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    white-space: nowrap;
+    overflow: hidden;
+    width: 0;
+    opacity: 0;
+    position: relative;
+    margin-top: 12px;
+  }
+  @keyframes typing {
+    from { width: 0; opacity: 1; }
+    to { width: 28ch; opacity: 1; }
+  }
+  .text::after {
+    content: '';
+    position: absolute;
+    width: 1px;
+    height: 90%;
+    top: 5%;
+    right: 0;
+    background-color: #1e3c72;
+    animation: blinkCursor 0.8s step-end infinite;
+  }
+  @keyframes blinkCursor {
+    0%, 49% { opacity: 1; }
+    50%, 100% { opacity: 0; }
+  }
+
+  /* Button */
+  .get-started {
+    margin-top: 20px;
+    padding: 10px 24px;
+    font-size: 1rem;
+    font-weight: 600;
+    border: none;
+    border-radius: 25px;
+    background: linear-gradient(90deg, #5c6bc0, #4dd0e1);
+    color: white;
+    cursor: pointer;
+    box-shadow: 0px 5px 12px rgba(0,0,0,0.2);
+    opacity: 0;
+    transform: translateY(15px);
+    transition: all 0.8s ease;
+  }
+  .get-started.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .get-started:hover {
+    background: linear-gradient(90deg, #4dd0e1, #5c6bc0);
+    box-shadow: 0px 7px 15px rgba(0,0,0,0.25);
+  }
+</style>
+</head>
+<body>
+<div class="page-wrapper">
+  <!-- Page 1 -->
+  <div class="page1">
+    <div class="branding-box">
+      <img src="{{ url_for('static', filename='images/pogo.png') }}" alt="NEXTORA Logo">
+      <h1>NEXTORA</h1>
+      <h2>Guided by Team Tech Titans</h2>
+      <p>An initiative taken by us for the betterment of the society</p>
+    </div>
+    <div class="team-logo">
+      <img src="{{ url_for('static', filename='images/pogo2.jpeg') }}" alt="Team Logo">
+      <p class="group-text">A group project</p>
+    </div>
+  </div>
+
+  <!-- Page 2 -->
+  <div class="page2">
+    <div class="logo">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+        <path class="hat-part" d="M2 22l30-12 30 12-30 12-30-12z"/>
+        <path class="hat-part" d="M32 34l-24-10v12l24 10 24-10V24z"/>
+        <path class="hat-part" d="M32 34v16"/>
+      </svg>
+    </div>
+    <div class="text">Welcome to your career journey.</div>
+    <button class="get-started"><a href="{{ url_for('home') }}">Get Started</button></a>
+  </div>
+</div>
+
+<script>
+  window.addEventListener('load', () => {
+    const page1 = document.querySelector('.page1');
+    const page2 = document.querySelector('.page2');
+    const paths = document.querySelectorAll('.hat-part');
+    const text = document.querySelector('.text');
+    const button = document.querySelector('.get-started');
+    const groupText = document.querySelector('.group-text');
+    const teamLogo = document.querySelector('.team-logo img');
+
+    // Animate team logo and "A group project" text
+    setTimeout(() => {
+      teamLogo.style.opacity = 1;
+      setTimeout(() => {
+        groupText.classList.add('show');
+      }, 700);
+    }, 1000);
+
+    // Transition to page2 after delay
+    setTimeout(() => {
+      page1.style.opacity = 0;
+      setTimeout(() => {
+        page1.style.display = 'none';
+        page2.style.opacity = 1;
+
+        // Animate SVG hat
+        paths[0].classList.add('draw');
+        paths[1].classList.add('draw', 'delay1');
+        paths[2].classList.add('draw', 'delay2');
+
+        // Typing effect after hat
+        setTimeout(() => {
+          text.style.opacity = '1';
+          text.style.animation = 'typing 4s steps(28, end) forwards';
+
+          // Show button after typing
+          setTimeout(() => {
+            button.classList.add('show');
+          }, 4200);
+        }, 1800);
+      }, 800);
+    }, 5000); // delay before second page
+  });
+</script>
+</body>
+</html>

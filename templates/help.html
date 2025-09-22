@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" href="./static/images/pogo.png">
+  
+    <title>Nextora</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #f0f4f8;
+        }
+
+        .accordion-item {
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            background: white;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            overflow: hidden;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .accordion-item:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .accordion-header {
+            cursor: pointer;
+            padding: 1.25rem;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #2563eb;
+            color: white;
+            border-radius: 10px;
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.5s ease, padding 0.5s ease;
+            padding: 0 1.25rem;
+        }
+
+        .accordion-arrow {
+            transition: transform 0.4s ease;
+        }
+
+        .accordion-arrow.open {
+            transform: rotate(90deg);
+        }
+
+        .accordion-content.open {
+            padding: 1.25rem;
+            overflow-y: auto;
+        }
+
+        .search-container {
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .search-input {
+            padding: 0.75rem;
+            width: 100%;
+            max-width: 600px;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+            font-size: 1.125rem;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #2563eb;
+            box-shadow: 0 0 5px rgba(37, 99, 235, 0.5);
+        }
+
+        .no-results {
+            display: none;
+            text-align: center;
+            margin-top: 1rem;
+            font-weight: bold;
+            color: #ef4444;
+        }
+    </style>
+</head>
+
+<body class="text-gray-800">
+
+    <header class="bg-blue-600 text-white p-6 text-center">
+        <h1 class="text-4xl font-bold">Nextora Help Center</h1>
+        <p class="mt-2 text-lg">Your guide to using Nextora’s powerful career planning tools</p>
+    </header>
+
+    <main class="max-w-5xl mx-auto p-6">
+
+        <section class="search-container">
+            <input type="text" id="search-input" class="search-input" placeholder="🔍 Search help topics..." />
+        </section>
+
+        <section id="accordion-container">
+
+            <div class="accordion-item">
+                <div class="accordion-header">
+                    <span>📍 Nearby College Finder</span>
+                    <span class="accordion-arrow">&#9654;</span>
+                </div>
+                <div class="accordion-content">
+                    <p>Quickly locate nearby degree colleges based on your current location. Explore detailed course information, eligibility criteria, infrastructure videos, admission deadlines, and more – all in one place.</p>
+                    
+                    
+                    <p>Additional information about Nearby College Finder...</p>
+                    
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <div class="accordion-header">
+                    <span>📝 Resume Builder</span>
+                    <span class="accordion-arrow">&#9654;</span>
+                </div>
+                <div class="accordion-content">
+                    <p>Build a professional resume step-by-step using intuitive templates. Add your education, skills, work experience, and download a polished PDF to impress recruiters instantly.</p>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <div class="accordion-header">
+                    <span>🎯 Personalized Career Guidance</span>
+                    <span class="accordion-arrow">&#9654;</span>
+                </div>
+                <div class="accordion-content">
+                    <p>Answer a few simple questions about your strengths and preferences, and Nextora generates personalized career path suggestions.</p>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <div class="accordion-header">
+                    <span>🧑‍💼 Interview Preparation Tools</span>
+                    <span class="accordion-arrow">&#9654;</span>
+                </div>
+                <div class="accordion-content">
+                    <p>Practice frequently asked interview questions, aptitude tests, and get expert guidance on how to answer difficult questions with confidence, improving your chances of landing your dream job.</p>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <div class="accordion-header">
+                    <span>💡 Career Chatbot</span>
+                    <span class="accordion-arrow">&#9654;</span>
+                </div>
+                <div class="accordion-content">
+                    <p>Use the AI-powered chatbot to instantly get answers about career options, degree programs, job trends, and more. Ask naturally, and receive helpful, real-time responses to your queries.</p>
+                </div>
+            </div>
+
+        </section>
+
+        <p id="no-results" class="no-results">⚠ No matching help topics found.</p>
+
+    </main>
+
+    <script>
+        const headers = document.querySelectorAll('.accordion-header');
+
+        headers.forEach(header => {
+            header.addEventListener('click', () => {
+                const content = header.nextElementSibling;
+                const arrow = header.querySelector('.accordion-arrow');
+
+                const isOpen = content.classList.contains('open');
+
+                // Close all
+                document.querySelectorAll('.accordion-content').forEach(c => {
+                    c.style.maxHeight = null;
+                    c.classList.remove('open');
+                });
+                document.querySelectorAll('.accordion-arrow').forEach(a => a.classList.remove('open'));
+
+                if (!isOpen) {
+                    content.classList.add('open');
+                    arrow.classList.add('open');
+
+                    content.style.maxHeight = '0px';
+                    content.style.padding = '1.25rem';
+
+                    setTimeout(() => {
+                        content.style.maxHeight = '300px'; // Fixed max height with scroll
+                    }, 10);
+                }
+            });
+        });
+
+        // Search Functionality
+        const searchInput = document.getElementById('search-input');
+        const accordionItems = document.querySelectorAll('.accordion-item');
+        const noResults = document.getElementById('no-results');
+
+        searchInput.addEventListener('input', () => {
+            const query = searchInput.value.toLowerCase();
+            let matches = 0;
+
+            accordionItems.forEach(item => {
+                const headerText = item.querySelector('.accordion-header').textContent.toLowerCase();
+                const contentText = item.querySelector('.accordion-content').textContent.toLowerCase();
+
+                if (headerText.includes(query) || contentText.includes(query)) {
+                    item.style.display = 'block';
+                    matches++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            noResults.style.display = matches ? 'none' : 'block';
+        });
+    </script>
+
+</body>
+
+</html>

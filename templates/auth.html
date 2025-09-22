@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="icon" href="./static/images/pogo.png">
+  <title>Nextora</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: "Segoe UI", sans-serif;
+      background: linear-gradient(135deg, #e6f2f0, #f7f2fb);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .container {
+      background: #ffffffcc;
+      padding: 2rem 3rem;
+      border-radius: 16px;
+      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+      text-align: center;
+      width: 360px;
+      max-width: 90%;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      margin-bottom: 0.2rem;
+      color: #4a7c59;
+    }
+
+    p {
+      color: #666;
+      font-size: 0.95rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .flash {
+      background: #ffefef;
+      color: #a94442;
+      border: 1px solid #f5c2c7;
+      padding: 0.5rem;
+      margin-bottom: 1rem;
+      border-radius: 8px;
+      font-size: 0.9rem;
+    }
+
+    .tabs {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .tab-btn {
+      flex: 1;
+      padding: 0.6rem;
+      cursor: pointer;
+      border: none;
+      background: #ddd;
+      font-weight: bold;
+      border-radius: 8px 8px 0 0;
+      transition: background 0.2s;
+      min-width: 100px;
+    }
+
+    .tab-btn.active {
+      background: #6c9c8d;
+      color: white;
+    }
+
+    form {
+      display: none;
+      flex-direction: column;
+      gap: 0.8rem;
+      margin-bottom: 1.2rem;
+    }
+
+    form.active {
+      display: flex;
+    }
+
+    input, select {
+      padding: 0.7rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.9rem;
+      color: #444;
+    }
+
+    button {
+      background: #6c9c8d;
+      color: white;
+      border: none;
+      padding: 0.7rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background 0.2s;
+      width: 100%;
+    }
+
+    button:hover {
+      background: #588372;
+    }
+
+    .or {
+      margin: 0.8rem 0;
+      font-size: 0.9rem;
+      color: #777;
+    }
+
+    .google-btn {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      border: 1px solid #ccc;
+      padding: 0.6rem;
+      border-radius: 8px;
+      background: white;
+      text-decoration: none;
+      color: #444;
+      font-size: 0.95rem;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .google-btn img {
+      width: 18px;
+      height: 18px;
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 1.2rem;
+      }
+
+      h1 {
+        font-size: 1.4rem;
+      }
+
+      p {
+        font-size: 0.85rem;
+      }
+
+      button, .google-btn {
+        font-size: 0.9rem;
+        padding: 0.6rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>🌿 Nextora</h1>
+    <p>Sign in or create an account</p>
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="flash">
+          {% for msg in messages %}
+            <p>{{ msg }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="showTab('login')">Login</button>
+      <button class="tab-btn" onclick="showTab('signup')">Signup</button>
+    </div>
+
+    <!-- Login Form -->
+    <form id="login" method="POST" class="active">
+      <input type="hidden" name="action" value="login">
+      <input type="email" name="email" placeholder="Enter Email" required>
+      <input type="password" name="password" placeholder="Enter Password" required>
+      <button type="submit">Login</button>
+    </form>
+
+    <!-- Signup Form -->
+    <form id="signup" method="POST">
+      <input type="hidden" name="action" value="signup">
+      <input type="text" name="first_name" placeholder="First Name" required>
+      <input type="text" name="last_name" placeholder="Last Name" required>
+      <input type="text" name="state" placeholder="State" required>
+      <input type="text" name="city" placeholder="City / Town / Village" required>
+      <input type="text" name="phone" placeholder="Phone Number" pattern="[0-9]{10}" required>
+      <input type="email" name="email" placeholder="Enter Email" required>
+      <input type="password" name="password" placeholder="Create Password" required>
+
+
+      <!-- inside signup form -->
+<!-- default 0 (means enrolled). If user checks, browser will send 1 -->
+<input type="hidden" name="not_enrolled" value="0">
+<label class="checkbox-group">
+  <input type="checkbox" name="not_enrolled" value="1">
+  I'm not currently enrolled in school
+</label>
+
+
+      <button type="submit">Sign Up</button>
+    </form>
+
+    <p class="or">OR</p>
+
+    <!-- Google Login -->
+    <a href="{{ url_for('login_google') }}" class="google-btn">
+      <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google logo">
+      Continue with Google
+    </a>
+  </div>
+
+  <script>
+    function showTab(tab) {
+      document.querySelectorAll("form").forEach(f => f.classList.remove("active"));
+      document.getElementById(tab).classList.add("active");
+
+      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+      event.target.classList.add("active");
+    }
+  </script>
+</body>
+</html>

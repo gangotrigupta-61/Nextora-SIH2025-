@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <link rel="icon" href="./static/images/pogo.png">
+  <title>Nextora</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            color: #1f2937;
+        }
+        .container {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+        }
+        .resource-card {
+            background-color: #ffffff;
+            border-radius: 1.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            width: 100%;
+            max-width: 900px;
+            padding: 2rem;
+        }
+        .resource-item {
+            display: flex;
+            align-items: flex-start;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .resource-item:hover {
+            background-color: #f9fafb;
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="resource-card">
+            <h1 class="text-4xl font-bold text-center text-indigo-700 mb-2">Interview</h1>
+            <p class="text-center text-gray-600 mb-10">A curated list of free, real-world resources to help you ace your next technical interview.</p>
+            
+            <div class="space-y-8">
+                <!-- Section: Free Resources -->
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-gift text-green-500 mr-3"></i>Free Resources
+                    </h2>
+                    <div class="space-y-4">
+                        <a href="https://ocw.mit.edu/courses/6-006-introduction-to-algorithms-fall-2011/" target="_blank" class="block">
+                            <div class="resource-item border border-gray-200">
+                                <div class="flex-shrink-0 mr-4 text-indigo-500">
+                                    <i class="fas fa-university text-3xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-800">MIT OpenCourseWare - Introduction to Algorithms</h3>
+                                    <p class="text-sm text-gray-600 mt-1">A highly-regarded course from MIT that covers fundamental algorithms and data structures in depth. Includes video lectures and assignments.</p>
+                                    <span class="mt-2 text-xs font-semibold text-indigo-600 block">Platform: MIT OpenCourseWare</span>
+                                </div>
+                            </div>
+                        </a>
+                        <a href="https://www.geeksforgeeks.org/data-structures/" target="_blank" class="block">
+                             <div class="resource-item border border-gray-200">
+                                <div class="flex-shrink-0 mr-4 text-indigo-500">
+                                    <i class="fas fa-book text-3xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-800">GeeksforGeeks - Data Structures Tutorials</h3>
+                                    <p class="text-sm text-gray-600 mt-1">A very popular and comprehensive reference for data structures, with detailed explanations and code examples in multiple languages.</p>
+                                    <span class="mt-2 text-xs font-semibold text-indigo-600 block">Platform: GeeksforGeeks</span>
+                                </div>
+                            </div>
+                        </a>
+                        <a href="https://leetcode.com/" target="_blank" class="block">
+                             <div class="resource-item border border-gray-200">
+                                <div class="flex-shrink-0 mr-4 text-green-500">
+                                    <i class="fas fa-laptop-code text-3xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-800">LeetCode</h3>
+                                    <p class="text-sm text-gray-600 mt-1">The go-to platform for coding interview practice, with thousands of problems and a vibrant community.</p>
+                                    <span class="mt-2 text-xs font-semibold text-green-600 block">Platform: LeetCode</span>
+                                </div>
+                            </div>
+                        </a>
+                        <a href="https://www.hackerrank.com/" target="_blank" class="block">
+                             <div class="resource-item border border-gray-200">
+                                <div class="flex-shrink-0 mr-4 text-green-500">
+                                    <i class="fas fa-code text-3xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-800">HackerRank</h3>
+                                    <p class="text-sm text-gray-600 mt-1">Another popular platform for practicing coding challenges, with a wide variety of problems and skill tracks.</p>
+                                    <span class="mt-2 text-xs font-semibold text-green-600 block">Platform: HackerRank</span>
+                                </div>
+                            </div>
+                        </a>
+                        <a href="https://www.youtube.com/playlist?list=PLMC0yL6Yl8aYh6hH2g5g5i5J4u6T2W9yM" target="_blank" class="block">
+                            <div class="resource-item border border-gray-200">
+                                <div class="flex-shrink-0 mr-4 text-purple-500">
+                                    <i class="fas fa-video text-3xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-800">Grokking System Design</h3>
+                                    <p class="text-sm text-gray-600 mt-1">A popular YouTube series that provides a step-by-step approach to solving common system design interview questions.</p>
+                                    <span class="mt-2 text-xs font-semibold text-purple-600 block">Platform: YouTube</span>
+                                </div>
+                            </div>
+                        </a>
+                         <a href="https://www.frontendinterviewhandbook.com/javascript-questions/" target="_blank" class="block">
+                             <div class="resource-item border border-gray-200">
+                                <div class="flex-shrink-0 mr-4 text-blue-500">
+                                    <i class="fas fa-code text-3xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-800">Front-End Interview Handbook</h3>
+                                    <p class="text-sm text-gray-600 mt-1">A comprehensive collection of front-end interview questions and answers, covering HTML, CSS, JavaScript, and more.</p>
+                                    <span class="mt-2 text-xs font-semibold text-blue-600 block">Platform: Free Website</span>
+                                </div>
+                            </div>
+                        </a>
+                        <a href="https://github.com/h5bp/Front-end-Developer-Interview-Questions" target="_blank" class="block">
+                             <div class="resource-item border border-gray-200">
+                                <div class="flex-shrink-0 mr-4 text-blue-500">
+                                    <i class="fab fa-github text-3xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-800">Front-end Developer Interview Questions</h3>
+                                    <p class="text-sm text-gray-600 mt-1">A huge list of questions covering a wide range of topics from general knowledge to specific frameworks like React and Vue.</p>
+                                    <span class="mt-2 text-xs font-semibold text-blue-600 block">Platform: GitHub</span>
+                                </div>
+                            </div>
+                        </a>
+                        <a href="https://www.youtube.com/watch?v=re3K-y-pL9c" target="_blank" class="block">
+                            <div class="resource-item border border-gray-200">
+                                <div class="flex-shrink-0 mr-4 text-red-500">
+                                    <i class="fas fa-comment-dots text-3xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-800">The STAR Method</h3>
+                                    <p class="text-sm text-gray-600 mt-1">A video guide on the STAR method (Situation, Task, Action, Result), a powerful technique for answering behavioral questions effectively.</p>
+                                    <span class="mt-2 text-xs font-semibold text-red-600 block">Platform: YouTube</span>
+                                </div>
+                            </div>
+                        </a>
+                        <a href="https://www.youtube.com/watch?v=wz-E-c9-e74" target="_blank" class="block">
+                            <div class="resource-item border border-gray-200">
+                                <div class="flex-shrink-0 mr-4 text-red-500">
+                                    <i class="fas fa-handshake text-3xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-800">Tell Me About Yourself</h3>
+                                    <p class="text-sm text-gray-600 mt-1">A video from "The Star Method" channel on how to answer the most common opening question in a job interview effectively.</p>
+                                    <span class="mt-2 text-xs font-semibold text-red-600 block">Platform: YouTube</span>
+                                </div>
+                            </div>
+                        </a>
+                         <a href="https://www.freecodecamp.org/news/how-to-prepare-for-a-coding-interview-guide/" target="_blank" class="block">
+                             <div class="resource-item border border-gray-200">
+                                <div class="flex-shrink-0 mr-4 text-green-500">
+                                    <i class="fas fa-laptop-code text-3xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-800">FreeCodeCamp - Interview Prep Guide</h3>
+                                    <p class="text-sm text-gray-600 mt-1">A massive, free guide with articles, videos, and practice problems covering all the key concepts for a coding interview.</p>
+                                    <span class="mt-2 text-xs font-semibold text-green-600 block">Platform: FreeCodeCamp</span>
+                                </div>
+                            </div>
+                        </a>
+                         <a href="https://www.techinterviewhandbook.org/mock-interviews/" target="_blank" class="block">
+                             <div class="resource-item border border-gray-200">
+                                <div class="flex-shrink-0 mr-4 text-blue-500">
+                                    <i class="fas fa-user-friends text-3xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-800">Tech Interview Handbook - Mock Interviews</h3>
+                                    <p class="text-sm text-gray-600 mt-1">A guide to finding and doing mock interviews, which is one of the best ways to practice for the real thing.</p>
+                                    <span class="mt-2 text-xs font-semibold text-blue-600 block">Platform: Free Website</span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Section: Visual Roadmaps -->
+                <div>
+                    <h2 class="text-2xl font-bold text-gray-800 mb-4 flex items-center">
+                        <i class="fas fa-map-marked-alt text-orange-500 mr-3"></i>Visual Roadmaps
+                    </h2>
+                    <div class="space-y-4">
+                        <a href="https://roadmap.sh/frontend" target="_blank" class="block">
+                            <div class="resource-item border border-gray-200">
+                                <div class="flex-shrink-0 mr-4 text-orange-500">
+                                    <i class="fas fa-laptop-code text-3xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-800">Front-End Developer Roadmap</h3>
+                                    <p class="text-sm text-gray-600 mt-1">A detailed, step-by-step guide to becoming a front-end developer, including all the skills and technologies you need to learn.</p>
+                                    <span class="mt-2 text-xs font-semibold text-orange-600 block">Platform: roadmap.sh</span>
+                                </div>
+                            </div>
+                        </a>
+                        <a href="https://roadmap.sh/backend" target="_blank" class="block">
+                            <div class="resource-item border border-gray-200">
+                                <div class="flex-shrink-0 mr-4 text-orange-500">
+                                    <i class="fas fa-server text-3xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-800">Back-End Developer Roadmap</h3>
+                                    <p class="text-sm text-gray-600 mt-1">A comprehensive guide for learning the skills needed to become a back-end developer, from basic concepts to advanced architecture.</p>
+                                    <span class="mt-2 text-xs font-semibold text-orange-600 block">Platform: roadmap.sh</span>
+                                </div>
+                            </div>
+                        </a>
+                        <a href="https://roadmap.sh/full-stack" target="_blank" class="block">
+                             <div class="resource-item border border-gray-200">
+                                <div class="flex-shrink-0 mr-4 text-orange-500">
+                                    <i class="fas fa-cogs text-3xl"></i>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-semibold text-gray-800">Full-Stack Developer Roadmap</h3>
+                                    <p class="text-sm text-gray-600 mt-1">A guide to navigating the complex world of full-stack development, covering both front-end and back-end technologies.</p>
+                                    <span class="mt-2 text-xs font-semibold text-orange-600 block">Platform: roadmap.sh</span>
+                                </div>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-10 text-center text-gray-500 text-sm">
+                
+            </div>
+        </div>
+    </div>
+</body>
+</html>

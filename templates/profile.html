@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="./static/images/pogo.png">
+  <title>Nextora</title>
+  <link rel="icon" href="{{ url_for('static', filename='images/finallogo.png') }}">
+  <style>
+    /* Updated color scheme with professional blue theme */
+    :root {
+      --primary: #2c3e50;
+      --secondary: #3498db;
+      --accent: #2980b9;
+      --light: #ecf0f1;
+      --gray: #95a5a6;
+      --dark: #34495e;
+      --success: #27ae60;
+      --error: #e74c3c;
+    }
+    
+    body { 
+      font-family: "Segoe UI", -apple-system, BlinkMacSystemFont, sans-serif; 
+      background: #f8f9fa; 
+      margin: 0; 
+      padding: 1rem;
+      display: flex;
+      justify-content: center;
+      min-height: 100vh;
+      color: var(--dark);
+    }
+    
+    .profile-container { 
+      width: 100%; 
+      max-width: 640px; 
+      background: white; 
+      padding: 2rem; 
+      border-radius: 12px; 
+      box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+      margin: 1rem 0;
+    }
+    
+    h1 { 
+      text-align: center; 
+      color: var(--primary); 
+      margin: 0 0 1.5rem; 
+      font-weight: 600;
+      font-size: 1.8rem;
+    }
+    
+    form { 
+      display: grid; 
+      gap: 1rem; 
+    }
+    
+    label { 
+      font-weight: 600; 
+      color: var(--dark); 
+      font-size: 0.9rem; 
+      display: block;
+      margin-bottom: 0.4rem;
+    }
+    
+    input, select { 
+      padding: 0.9rem; 
+      border-radius: 8px; 
+      border: 1px solid #ddd; 
+      font-size: 1rem; 
+      width: 100%; 
+      box-sizing: border-box;
+      transition: all 0.2s ease;
+    }
+    
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--secondary);
+      box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+    }
+    
+    input[readonly] {
+      background-color: #f8f9fa;
+      color: var(--gray);
+      cursor: not-allowed;
+    }
+    
+    .row { 
+      display: grid; 
+      grid-template-columns: 1fr 1fr; 
+      gap: 1rem; 
+    }
+    
+    .checkbox { 
+      display: flex; 
+      align-items: center; 
+      gap: 0.6rem; 
+      padding: 1rem; 
+      border-radius: 8px; 
+      border: 1px solid #eee; 
+      background: #f8f9fa;
+      margin: 0.5rem 0;
+    }
+    
+    .checkbox input[type="checkbox"] {
+      width: auto;
+      transform: scale(1.2);
+    }
+    
+    button { 
+      margin-top: 0.5rem; 
+      padding: 1rem; 
+      border-radius: 8px; 
+      border: none; 
+      background: var(--secondary);
+      color: white; 
+      cursor: pointer; 
+      font-weight: 600;
+      font-size: 1rem;
+      transition: background 0.2s ease;
+    }
+    
+    button:hover {
+      background: var(--accent);
+    }
+    
+    .note { 
+      font-size: 0.85rem; 
+      color: var(--gray); 
+      margin-top: 0.8rem;
+      line-height: 1.4;
+    }
+    
+    /* Flash message styling */
+    .flash-messages {
+      background: #ffeaa7;
+      border: 1px solid #fdcb6e;
+      padding: 0.8rem 1rem;
+      border-radius: 8px;
+      margin-bottom: 1.2rem;
+      color: #d35400;
+      font-size: 0.9rem;
+    }
+    
+    /* Enhanced responsiveness */
+    @media (max-width: 680px) {
+      body {
+        padding: 0.5rem;
+      }
+      
+      .profile-container {
+        padding: 1.5rem;
+      }
+    }
+    
+    @media (max-width: 600px){
+      .row { 
+        grid-template-columns: 1fr;
+        gap: 0.8rem;
+      }
+      
+      h1 {
+        font-size: 1.6rem;
+      }
+    }
+    
+    @media (max-width: 400px) {
+      .profile-container {
+        padding: 1.2rem;
+      }
+      
+      input, select {
+        padding: 0.8rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="profile-container">
+    <h1>Profile Information</h1>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="flash-messages">
+          {% for m in messages %}<div>{{ m }}</div>{% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('profile') }}">
+      <div class="row">
+        <div>
+          <label>First Name</label>
+          <input type="text" name="first_name" value="{{ user.first_name or '' }}" required>
+        </div>
+        <div>
+          <label>Last Name</label>
+          <input type="text" name="last_name" value="{{ user.last_name or '' }}" required>
+        </div>
+      </div>
+
+      <label>Select State</label>
+      <input type="text" name="state" value="{{ user.state or '' }}" required>
+
+      <label>City / Town / Village</label>
+      <input type="text" name="city" value="{{ user.city or '' }}" required>
+
+      <label>Phone</label>
+      <input type="text" name="phone" value="{{ user.phone or '' }}" pattern="[0-9]{10}" required>
+
+      <label>Email (cannot change)</label>
+      <input type="email" name="email" value="{{ user.email or '' }}" readonly>
+
+      <div class="checkbox">
+        <input type="hidden" name="not_enrolled" value="0">
+        <input type="checkbox" id="not_enrolled" name="not_enrolled" value="1"
+               {% if user.enrolled is not none and not user.enrolled %}checked{% endif %}>
+        <label for="not_enrolled">I'm not currently enrolled in school</label>
+      </div>
+
+      <button type="submit">Save Changes</button>
+
+      <div class="note">Use this form to update the profile information you provided during signup.</div>
+    </form>
+  </div>
+</body>
+</html>

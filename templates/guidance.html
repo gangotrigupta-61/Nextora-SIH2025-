@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="./static/images/pogo.png">
+  <title>Nextora</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* ===== Body & Container ===== */
+body, html { margin:0; padding:0; height:100%; font-family:'Inter',sans-serif; overflow-x:hidden; }
+body { background: linear-gradient(135deg,#cfd9ff,#e2ebf9); display:flex; justify-content:center; align-items:center; position:relative; }
+.container { width:90%; max-width:1400px; min-height:90vh; background:#ffffffcc; border-radius:25px; padding:40px; box-shadow:0 15px 50px rgba(0,0,0,0.2); display:flex; flex-direction:column; align-items:center; position:relative; transition:all 0.5s; }
+
+/* ===== Title ===== */
+h1 { color:#4f46e5; font-size:3em; margin-bottom:30px; text-align:center; text-shadow: 1px 1px 3px #bbb; animation:fadeIn 1s ease forwards; }
+
+/* ===== Sections ===== */
+.selection, .options, .results { width:100%; max-width:900px; margin-top:20px; display:flex; flex-direction:column; align-items:center; transition:all 0.5s ease; }
+
+/* ===== Buttons ===== */
+button { padding:15px 40px; margin:15px; font-size:1.1em; border:none; border-radius:20px; cursor:pointer; font-weight:600; background:linear-gradient(135deg,#6366F1,#4F46E5); color:white; transition:all 0.3s; box-shadow:0 5px 25px rgba(0,0,0,0.2); }
+button:hover { transform:scale(1.1); box-shadow:0 10px 35px rgba(0,0,0,0.3); }
+
+/* ===== Option Cards ===== */
+.option-card { width:100%; background:linear-gradient(135deg,#e0e7ff,#f3f4f6); margin:10px 0; padding:25px; border-radius:20px; box-shadow:0 10px 30px rgba(0,0,0,0.1); transition:all 0.5s; cursor:pointer; border-left:5px solid #4f46e5; transform-style: preserve-3d; perspective: 1000px; }
+.option-card h3 { color:#4f46e5; margin-bottom:10px; font-size:1.5em; }
+.option-card p { font-size:1em; line-height:1.5; }
+.option-card:hover { background:linear-gradient(135deg,#f3f4f6,#e0e7ff); transform: rotateY(5deg) scale(1.03); box-shadow:0 15px 35px rgba(0,0,0,0.2); }
+
+/* ===== Result Section ===== */
+.results { background:linear-gradient(135deg,#6366F1,#8b5cf6); padding:25px; border-radius:25px; margin-top:25px; color:white; box-shadow:0 10px 30px rgba(0,0,0,0.2); opacity:0; transform:translateY(50px); transition:all 0.8s ease; }
+.results.show { opacity:1; transform:translateY(0); }
+.results h2 { text-align:center; margin-bottom:15px; font-size:2em; text-shadow: 1px 1px 3px #222; }
+.results p { margin:10px 0; font-size:1.1em; line-height:1.5; }
+
+/* ===== Particle Background ===== */
+#particles { position:absolute; width:100%; height:100%; top:0; left:0; z-index:-1; }
+
+/* ===== Animations ===== */
+@keyframes fadeIn { 0% {opacity:0; transform:translateY(-20px);} 100% {opacity:1; transform:translateY(0);} }
+
+@media (max-width:768px){
+    .container{padding:25px;}
+    h1{font-size:2em;}
+    button{width:80%; padding:12px 0;}
+}
+</style>
+</head>
+<body>
+<canvas id="particles"></canvas>
+
+<div class="container">
+    <h1>Career Guidance</h1>
+
+    <!-- Class Selection -->
+    <div class="selection" id="classSelection">
+        <h2>Select Your Class</h2>
+        <button onclick="chooseClass('10')">Class 10</button>
+        <button onclick="chooseClass('12')">Class 12</button>
+    </div>
+
+    <!-- Stream Selection for Class 10 -->
+    <div class="options" id="streamSelection" style="display:none;"></div>
+
+    <!-- Degree Selection for Class 12 -->
+    <div class="options" id="degreeSelection" style="display:none;"></div>
+
+    <!-- Result Section -->
+    <div class="results" id="resultSection">
+        <h2>Recommended Career Paths</h2>
+        <div id="resultContent"></div>
+    </div>
+</div>
+
+<script>
+/* ===== Data ===== */
+const streams10=[
+    {name:"Science", desc:"High demand in engineering, AI, healthcare. Starting salary: ₹6-12 LPA.", future:"Tech and healthcare sectors growing fast."},
+    {name:"Commerce", desc:"Careers in finance, business management. Salary: ₹4-10 LPA.", future:"Finance and analytics jobs rising."},
+    {name:"Arts/Humanities", desc:"Media, law, teaching, social work. Salary: ₹3-8 LPA.", future:"Creative and social sectors growing."}
+];
+const degrees12=[
+    {name:"B.Tech", desc:"Engineering degree with AI, Robotics, Software careers."},
+    {name:"B.Sc", desc:"Science degree: research, lab, data analysis."},
+    {name:"B.Com", desc:"Commerce degree: finance, CA, analyst roles."},
+    {name:"BA", desc:"Arts degree: teaching, media, social work."}
+];
+
+/* ===== Class Selection ===== */
+function chooseClass(cls){
+    document.getElementById('classSelection').style.display='none';
+    if(cls==='10'){
+        const container=document.getElementById('streamSelection');
+        container.innerHTML="<h2>Select Your Stream</h2>";
+        streams10.forEach((stream,index)=>{
+            const card=document.createElement('div');
+            card.className='option-card';
+            card.innerHTML=`<h3>${stream.name}</h3><p>${stream.desc}</p>`;
+            card.onclick=()=>showResult('10',index);
+            container.appendChild(card);
+        });
+        container.style.display='flex';
+    }else{
+        const container=document.getElementById('degreeSelection');
+        container.innerHTML="<h2>Available Degree Programs Nearby</h2>";
+        degrees12.forEach((deg,index)=>{
+            const card=document.createElement('div');
+            card.className='option-card';
+            card.innerHTML=`<h3>${deg.name}</h3><p>${deg.desc}</p>`;
+            card.onclick=()=>showResult('12',index);
+            container.appendChild(card);
+        });
+        container.style.display='flex';
+    }
+}
+
+/* ===== Show Result ===== */
+function showResult(cls,index){
+    let content="";
+    if(cls==='10'){
+        const stream=streams10[index];
+        content=`<p><strong>Selected Stream:</strong> ${stream.name}</p>
+                 <p>${stream.desc}</p>
+                 <p><strong>Future Outlook:</strong> ${stream.future}</p>`;
+        document.getElementById('streamSelection').style.display='none';
+    }else{
+        const deg=degrees12[index];
+        content=`<p><strong>Selected Degree:</strong> ${deg.name}</p>
+                 <p>${deg.desc}</p>`;
+        document.getElementById('degreeSelection').style.display='none';
+    }
+    const resultSection=document.getElementById('resultSection');
+    document.getElementById('resultContent').innerHTML=content;
+    resultSection.classList.add('show');
+}
+
+/* ===== Particle Animation ===== */
+const canvas=document.getElementById('particles');
+const ctx=canvas.getContext('2d');
+canvas.width=window.innerWidth;
+canvas.height=window.innerHeight;
+
+const particlesArray=[];
+class Particle{
+    constructor(){ this.x=Math.random()*canvas.width; this.y=Math.random()*canvas.height; this.size=Math.random()*3+1; this.speedX=Math.random()*1-0.5; this.speedY=Math.random()*1-0.5; }
+    update(){ this.x+=this.speedX; this.y+=this.speedY; if(this.x<0||this.x>canvas.width){ this.speedX*=-1; } if(this.y<0||this.y>canvas.height){ this.speedY*=-1; } }
+    draw(){ ctx.fillStyle='rgba(79,70,229,0.8)'; ctx.beginPath(); ctx.arc(this.x,this.y,this.size,0,Math.PI*2); ctx.fill(); }
+}
+
+for(let i=0;i<100;i++){ particlesArray.push(new Particle()); }
+
+function animate(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    particlesArray.forEach(p=>{ p.update(); p.draw(); });
+    requestAnimationFrame(animate);
+}
+animate();
+
+window.addEventListener('resize',()=>{ canvas.width=window.innerWidth; canvas.height=window.innerHeight; });
+</script>
+</body>
+</html>

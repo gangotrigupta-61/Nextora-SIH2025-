@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nextora Aptitude Test</title>
+    <style>
+        :root {
+            --primary-blue: #3498db;
+            --dark-blue: #2980b9;
+            --light-gray: #f4f7f9;
+            --text-color: #333;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --gradient: linear-gradient(45deg, #3498db, #5dade2);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--light-gray);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .app-container {
+            background-color: #fff;
+            border-radius: 16px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
+            padding: 40px;
+            max-width: 800px;
+            width: 100%;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Background circles for a modern look */
+        .app-container::before, .app-container::after {
+            content: '';
+            position: absolute;
+            background: var(--primary-blue);
+            opacity: 0.05;
+            border-radius: 50%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .app-container::before {
+            width: 150px;
+            height: 150px;
+            top: -50px;
+            left: -50px;
+        }
+        
+        .app-container::after {
+            width: 200px;
+            height: 200px;
+            bottom: -70px;
+            right: -70px;
+        }
+
+        .page {
+            display: none;
+            animation: fadeIn 0.6s ease-in-out;
+            position: relative;
+            z-index: 1;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .logo {
+            font-size: 2.2rem;
+            font-weight: 700;
+            background-image: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: var(--dark-blue);
+            text-align: center;
+            margin-bottom: 15px;
+        }
+        
+        h2 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+        
+        p {
+            text-align: center;
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+        
+        .username-input-group {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .username-input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+            color: var(--dark-blue);
+            font-weight: 600;
+        }
+        
+        #username {
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 300px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+        
+        #username:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #fff;
+            background-color: var(--primary-blue);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn:hover {
+            background-color: var(--dark-blue);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Test Page Specifics */
+        .test-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .topic-title {
+            color: var(--dark-blue);
+        }
+
+        .question-counter {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            height: 8px;
+            background-color: #e0e0e0;
+            border-radius: 4px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            width: 0;
+            background-color: var(--primary-blue);
+            transition: width 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .question-text {
+            font-size: 1.3rem;
+            margin-bottom: 25px;
+            min-height: 60px;
+            line-height: 1.4;
+        }
+
+        .options-container {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .option {
+            padding: 15px;
+            background-color: var(--light-gray);
+            border: 2px solid transparent;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.2s, border-color 0.2s, transform 0.1s;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            font-size: 1.05rem;
+        }
+
+        .option:hover {
+            background-color: #e9eff3;
+            transform: scale(1.01);
+        }
+
+        .option.selected {
+            border-color: var(--primary-blue);
+            background-color: #e9eff3;
+            box-shadow: 0 4px 8px rgba(52, 152, 219, 0.2);
+            font-weight: 500;
+        }
+
+        .navigation-btns {
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .nav-btn {
+            width: 48%;
+            background-color: #6c757d;
+            box-shadow: none;
+        }
+        
+        .nav-btn:hover {
+            background-color: #5a6268;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .submit-btn {
+            background-color: #e74c3c;
+            transition: background-color 0.3s ease;
+        }
+
+        .submit-btn:hover {
+            background-color: #c0392b;
+        }
+
+        /* Result Page Specifics */
+        .score-display {
+            font-size: 3rem;
+            font-weight: 700;
+            background-image: var(--gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-align: center;
+            margin-bottom: 20px;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .topic-performance, .career-recommendations {
+            margin-top: 30px;
+        }
+
+        .topic-list {
+            list-style-type: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .topic-item {
+            background-color: var(--light-gray);
+            padding: 10px 18px;
+            border-radius: 20px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .topic-item.high { background-color: #e8f5e9; color: #1b5e20; }
+        .topic-item.low { background-color: #ffebee; color: #c62828; }
+        .topic-item.medium { background-color: #fff8e1; color: #ff6f00; }
+
+        .career-path {
+            background-color: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s ease;
+        }
+        
+        .career-path:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .career-path h4 {
+            color: var(--dark-blue);
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+
+        .career-path p {
+            text-align: left;
+            font-size: 1rem;
+            margin-bottom: 15px;
+        }
+
+        .career-path ul {
+            list-style-type: '👉';
+            padding-left: 20px;
+        }
+
+        .career-path li {
+            margin-bottom: 8px;
+        }
+
+        .career-path a {
+            color: var(--primary-blue);
+            text-decoration: none;
+            transition: color 0.2s ease;
+            font-weight: 500;
+        }
+
+        .career-path a:hover {
+            color: var(--dark-blue);
+            text-decoration: underline;
+        }
+
+        @media (max-width: 600px) {
+            .app-container {
+                padding: 20px;
+            }
+            .btn, .nav-btn {
+                font-size: 1rem;
+            }
+            .question-text {
+                font-size: 1.1rem;
+                min-height: auto;
+            }
+            .logo {
+                font-size: 1.8rem;
+            }
+            h1 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div id="start-page" class="page active">
+            <div class="logo">Nextora</div>
+            <h1>Aptitude & Career Assessment</h1>
+            <p>Welcome! This test will help you identify your strengths and suggest suitable career paths based on your performance in 10 key areas.</p>
+            <div class="username-input-group">
+                <label for="username">Enter your name:</label>
+                <input type="text" id="username" placeholder="e.g., Alex Johnson" required>
+            </div>
+            <button id="start-btn" class="btn">Start Test</button>
+        </div>
+
+        <div id="test-page" class="page">
+            <div class="test-header">
+                <span id="topic-title" class="topic-title"></span>
+                <span id="question-counter" class="question-counter"></span>
+            </div>
+            <div class="progress-bar-container">
+                <div id="progress-bar" class="progress-bar"></div>
+            </div>
+            <h2 id="question-text" class="question-text"></h2>
+            <div id="options-container" class="options-container"></div>
+            <div class="navigation-btns">
+                <button id="prev-btn" class="btn nav-btn">Previous</button>
+                <button id="next-btn" class="btn nav-btn">Next</button>
+            </div>
+        </div>
+
+        <div id="result-page" class="page">
+            <div class="logo">Nextora</div>
+            <h1 id="result-username-title"></h1>
+            <div id="score-display" class="score-display"></div>
+            
+            <div id="topic-performance" class="topic-performance">
+                <h3>Performance by Topic</h3>
+                <ul id="topic-list" class="topic-list"></ul>
+            </div>
+
+            <div id="career-recommendations" class="career-recommendations">
+                <h3>Recommended Career Paths</h3>
+                <div id="career-paths-container"></div>
+            </div>
+
+            <button id="home-btn" class="btn">Return to Home</button>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            // Logical Reasoning (10 questions)
+            { topic: "Logical Reasoning", question: "If all bachelors are unmarried, and John is a bachelor, then John is unmarried. This is an example of:", options: ["Deductive reasoning", "Inductive reasoning", "Abductive reasoning", "Analogical reasoning"], answer: "Deductive reasoning" },
+            { topic: "Logical Reasoning", question: "Find the missing number in the series: 2, 5, 10, 17, ?", options: ["24", "26", "28", "30"], answer: "26" },
+            { topic: "Logical Reasoning", question: "Which word does not belong: Apple, Orange, Banana, Potato?", options: ["Apple", "Orange", "Banana", "Potato"], answer: "Potato" },
+            { topic: "Logical Reasoning", question: "If 'A' is twice as old as 'B', and 'C' is half the age of 'B', who is the oldest?", options: ["A", "B", "C", "Cannot be determined"], answer: "A" },
+            { topic: "Logical Reasoning", question: "Socrates is a man. All men are mortal. Therefore, Socrates is mortal. This is a:", options: ["Syllogism", "Fallacy", "Paradox", "Contradiction"], answer: "Syllogism" },
+            { topic: "Logical Reasoning", question: "Which of the following is an odd one out: Car, Bus, Train, Helicopter?", options: ["Car", "Bus", "Train", "Helicopter"], answer: "Helicopter" },
+            { topic: "Logical Reasoning", question: "A is the father of B. C is the daughter of D. B is the mother of C. What is the relation of A to C?", options: ["Grandfather", "Grandmother", "Father", "Uncle"], answer: "Grandfather" },
+            { topic: "Logical Reasoning", question: "If 'CAT' is coded as '3120', 'DOG' is coded as '4157'. What is 'COW' coded as?", options: ["31523", "3123", "31522", "31524"], answer: "31523" },
+            { topic: "Logical Reasoning", question: "All dogs are animals. Some animals are pets. Therefore, some dogs are pets. This is an example of:", options: ["Valid conclusion", "Invalid conclusion", "Contradiction", "Tautology"], answer: "Invalid conclusion" },
+            { topic: "Logical Reasoning", question: "A man walks 5 km East, then 3 km North, then 5 km West. How far is he from his starting point?", options: ["3 km", "5 km", "8 km", "13 km"], answer: "3 km" },
+            // Numerical Aptitude (10 questions)
+            { topic: "Numerical Aptitude", question: "What is 15% of 200?", options: ["10", "20", "30", "40"], answer: "30" },
+            { topic: "Numerical Aptitude", question: "A car travels at 60 km/h. How long will it take to travel 180 km?", options: ["2 hours", "3 hours", "4 hours", "5 hours"], answer: "3 hours" },
+            { topic: "Numerical Aptitude", question: "The average of 5 numbers is 30. If one number is removed, the average becomes 25. What was the removed number?", options: ["40", "50", "55", "60"], answer: "50" },
+            { topic: "Numerical Aptitude", question: "If a shirt costs $25 and is on sale for 20% off, what is the new price?", options: ["$20", "$15", "$22", "$18"], answer: "$20" },
+            { topic: "Numerical Aptitude", question: "A box contains 6 red balls and 4 blue balls. What is the probability of picking a red ball?", options: ["1/2", "3/5", "2/5", "1/4"], answer: "3/5" },
+            { topic: "Numerical Aptitude", question: "Simplify: 4 + 3 * 2 - 1", options: ["9", "10", "11", "12"], answer: "9" },
+            { topic: "Numerical Aptitude", question: "A sum of money at simple interest doubles itself in 10 years. In how many years will it triple itself?", options: ["15", "20", "25", "30"], answer: "20" },
+            { topic: "Numerical Aptitude", question: "A train running at 72 km/h crosses a man in 10 seconds. What is the length of the train in meters?", options: ["100", "150", "200", "250"], answer: "200" },
+            { topic: "Numerical Aptitude", question: "What is the next number in the sequence: 1, 1, 2, 3, 5, 8, ...?", options: ["11", "12", "13", "14"], answer: "13" },
+            { topic: "Numerical Aptitude", question: "If x + 5 = 10, then 2x = ?", options: ["5", "10", "15", "20"], answer: "10" },
+            // Analytical Skills (10 questions)
+            { topic: "Analytical Skills", question: "A company’s profit was $10M in 2020 and $12M in 2021. What is the percentage increase?", options: ["10%", "20%", "25%", "30%"], answer: "20%" },
+            { topic: "Analytical Skills", question: "Given A > B, and C < B, which of the following is true?", options: ["A > C", "B > A", "C > A", "C = A"], answer: "A > C" },
+            { topic: "Analytical Skills", question: "A problem can be solved by either method X or method Y. Method X takes twice as long as method Y. If you have 3 hours, which method should you use?", options: ["Method X", "Method Y", "Both methods", "Cannot be determined"], answer: "Method Y" },
+            { topic: "Analytical Skills", question: "If a is greater than b, and c is greater than a, which is the smallest?", options: ["a", "b", "c", "Cannot be determined"], answer: "b" },
+            { topic: "Analytical Skills", question: "You have 8 balls. One is heavier than the others. Using a balance scale, how many weighings are needed to find the heavier ball?", options: ["1", "2", "3", "4"], answer: "2" },
+            { topic: "Analytical Skills", question: "A product's cost is broken down as 40% materials, 30% labor, 20% overhead, and 10% profit. If the total cost is $500, what is the profit?", options: ["$50", "$100", "$150", "$200"], answer: "$50" },
+            { topic: "Analytical Skills", question: "A train leaves at 2:00 PM and arrives at 5:30 PM. How long was the journey?", options: ["3 hours", "3.5 hours", "4 hours", "2.5 hours"], answer: "3.5 hours" },
+            { topic: "Analytical Skills", question: "If all P are Q and no R is Q, then...", options: ["No R is P", "All P are R", "All Q are P", "No P is Q"], answer: "No R is P" },
+            { topic: "Analytical Skills", question: "You have a 5-liter jug and a 3-liter jug. How can you measure exactly 4 liters?", options: ["Fill 5L, pour into 3L, empty 3L, pour remaining 2L into 3L, fill 5L, pour into 3L", "Fill 3L, pour into 5L, fill 3L again, pour into 5L until full, remaining in 3L jug is 1L", "Fill 5L, pour into 3L, remaining in 5L jug is 2L", "It's impossible"], answer: "Fill 5L, pour into 3L, empty 3L, pour remaining 2L into 3L, fill 5L, pour into 3L" },
+            { topic: "Analytical Skills", question: "A is 10 miles from B. B is 5 miles from C. C is 12 miles from D. What is the maximum possible distance between A and D?", options: ["27 miles", "17 miles", "7 miles", "Cannot be determined"], answer: "27 miles" },
+            // Verbal Ability & Communication (10 questions)
+            { topic: "Verbal Ability & Communication", question: "Choose the word that is a synonym for 'ephemeral'.", options: ["Permanent", "Fleeting", "Ancient", "Vast"], answer: "Fleeting" },
+            { topic: "Verbal Ability & Communication", question: "Choose the correct sentence: The cat sat on its mat.", options: ["The cat sat on it's mat.", "The cat sat on its' mat.", "The cat sat on its mat.", "The cat sat on its's mat."], answer: "The cat sat on its mat." },
+            { topic: "Verbal Ability & Communication", question: "Which of the following is a homophone for 'their'?", options: ["There", "They're", "They're and There", "None of the above"], answer: "There" },
+            { topic: "Verbal Ability & Communication", question: "Choose the antonym for 'benevolent'.", options: ["Kind", "Malevolent", "Generous", "Helpful"], answer: "Malevolent" },
+            { topic: "Verbal Ability & Communication", question: "The speaker's tone was ____, but his words were comforting.", options: ["harsh", "warm", "soothing", "melodious"], answer: "harsh" },
+            { topic: "Verbal Ability & Communication", question: "Identify the part of speech of the word 'quickly' in the sentence: He ran quickly.", options: ["Noun", "Verb", "Adverb", "Adjective"], answer: "Adverb" },
+            { topic: "Verbal Ability & Communication", question: "Choose the correct spelling:", options: ["Maintanance", "Maintenance", "Maintenence", "Maintainence"], answer: "Maintenance" },
+            { topic: "Verbal Ability & Communication", question: "Which of the following is an idiom?", options: ["It's raining cats and dogs", "The cat is on the mat", "He is running fast", "The sun is shining"], answer: "It's raining cats and dogs" },
+            { topic: "Verbal Ability & Communication", question: "What does 'e.g.' stand for?", options: ["Exact example", "Example given", "For example", "Example grade"], answer: "For example" },
+            { topic: "Verbal Ability & Communication", question: "Complete the proverb: A stitch in time saves...", options: ["money", "nine", "trouble", "the day"], answer: "nine" },
+            // Data Interpretation (10 questions)
+            { topic: "Data Interpretation", question: "A pie chart shows sales distribution. If product A has a 45-degree sector, what percentage of total sales does it represent?", options: ["10%", "12.5%", "25%", "15%"], answer: "12.5%" },
+            { topic: "Data Interpretation", question: "A bar graph shows profits for 4 quarters. Q1: $500, Q2: $600, Q3: $750, Q4: $400. What is the average quarterly profit?", options: ["$500", "$562.5", "$600", "$650"], answer: "$562.5" },
+            { topic: "Data Interpretation", question: "A table shows student scores. What is the mode of the following scores: 85, 90, 85, 95, 80?", options: ["85", "90", "80", "95"], answer: "85" },
+            { topic: "Data Interpretation", question: "A line graph tracks website visitors. If visitors went from 1000 to 1200, what is the percentage increase?", options: ["10%", "20%", "25%", "30%"], answer: "20%" },
+            { topic: "Data Interpretation", question: "Based on a scatter plot, if two variables show a positive correlation, what does this mean?", options: ["As one increases, the other decreases", "As one increases, the other also increases", "There is no relationship", "They are inversely proportional"], answer: "As one increases, the other also increases" },
+            { topic: "Data Interpretation", question: "A histogram shows the frequency of ages. The most frequent age range is 20-30. This is the:", options: ["Mean", "Median", "Mode", "Range"], answer: "Mode" },
+            { topic: "Data Interpretation", question: "If a pie chart is divided into 4 sectors of 90 degrees each, what is the percentage of each sector?", options: ["10%", "25%", "50%", "100%"], answer: "25%" },
+            { topic: "Data Interpretation", question: "A company's revenue is $1M. Its expenses are $750,000. What is the profit margin?", options: ["10%", "15%", "20%", "25%"], answer: "25%" },
+            { topic: "Data Interpretation", question: "A bar graph shows sales of apples and oranges. Apples sold: 50, Oranges sold: 70. What is the ratio of apples to oranges?", options: ["5:7", "7:5", "5:12", "7:12"], answer: "5:7" },
+            { topic: "Data Interpretation", question: "A pivot table shows a product's sales in different regions. To find the total sales for the Northeast region, you would look at the:", options: ["Row total", "Column total", "Grand total", "Subtotal"], answer: "Subtotal" },
+            // Technical Proficiency (10 questions)
+            { topic: "Technical Proficiency", question: "What does HTML stand for?", options: ["Hyper Text Markup Language", "High-Level Text Language", "Hyperlink and Text Markup Language", "Home Tool Markup Language"], answer: "Hyper Text Markup Language" },
+            { topic: "Technical Proficiency", question: "Which of the following is NOT a programming language?", options: ["Python", "JavaScript", "SQL", "Photoshop"], answer: "Photoshop" },
+            { topic: "Technical Proficiency", question: "What is the primary function of CSS?", options: ["To add interactivity to a website", "To structure the content of a webpage", "To style the visual appearance of a webpage", "To manage a database"], answer: "To style the visual appearance of a webpage" },
+            { topic: "Technical Proficiency", question: "What is a 'bug' in software development?", options: ["A programming error", "A type of virus", "A design flaw", "A new feature"], answer: "A programming error" },
+            { topic: "Technical Proficiency", question: "Which protocol is used for sending email?", options: ["HTTP", "FTP", "SMTP", "TCP/IP"], answer: "SMTP" },
+            { topic: "Technical Proficiency", question: "What is the purpose of a firewall?", options: ["To speed up a computer", "To protect a network from unauthorized access", "To clean a computer's hard drive", "To install software"], answer: "To protect a network from unauthorized access" },
+            { topic: "Technical Proficiency", question: "In Python, which keyword is used to define a function?", options: ["function", "def", "func", "define"], answer: "def" },
+            { topic: "Technical Proficiency", question: "What is 'cloud computing'?", options: ["Using local computers for all tasks", "Storing data on a USB drive", "Using a network of remote servers hosted on the internet to store, manage, and process data", "A weather forecasting method"], answer: "Using a network of remote servers hosted on the internet to store, manage, and process data" },
+            { topic: "Technical Proficiency", question: "Which of these is a database management system?", options: ["Microsoft Word", "Adobe Photoshop", "MySQL", "Google Chrome"], answer: "MySQL" },
+            { topic: "Technical Proficiency", question: "What is 'blockchain'?", options: ["A type of cryptocurrency", "A decentralized ledger technology", "A secure network protocol", "A type of database"], answer: "A decentralized ledger technology" },
+            // Decision Making (10 questions)
+            { topic: "Decision Making", question: "You have a tight deadline and a complex task. Your team member is sick. Do you:", options: ["Try to do the entire task yourself", "Delegate parts to other team members", "Ask for an extension on the deadline", "Report to your manager and ask for advice"], answer: "Delegate parts to other team members" },
+            { topic: "Decision Making", question: "A client requests a feature that is outside the project scope. Do you:", options: ["Implement it without discussing it", "Decline immediately", "Discuss the request with the client and your manager", "Say yes and hope you can fit it in"], answer: "Discuss the request with the client and your manager" },
+            { topic: "Decision Making", question: "A project has a 50% chance of high success but also a 50% chance of complete failure. How do you proceed?", options: ["Avoid the project due to high risk", "Proceed without any changes", "Mitigate risks by creating a backup plan", "Seek a safer, less rewarding project"], answer: "Mitigate risks by creating a backup plan" },
+            { topic: "Decision Making", question: "You have two job offers. Offer A has a higher salary but is a longer commute. Offer B has a lower salary but is closer to home. Which factor is most important?", options: ["Salary", "Commute", "Work-life balance", "Your personal priorities"], answer: "Your personal priorities" },
+            { topic: "Decision Making", question: "A team member is consistently underperforming. Do you:", options: ["Ignore the issue and hope it improves", "Report them to HR immediately", "Talk to them privately to understand the issue and offer support", "Publicly reprimand them in a team meeting"], answer: "Talk to them privately to understand the issue and offer support" },
+            { topic: "Decision Making", question: "A customer is unhappy with a product. Do you:", options: ["Ignore their complaint", "Blame the engineering team", "Listen to their feedback and offer a solution or refund", "Tell them to read the manual"], answer: "Listen to their feedback and offer a solution or refund" },
+            { topic: "Decision Making", question: "You discover a major flaw in a product before launch. Do you:", options: ["Launch anyway and fix it later", "Delay the launch to fix the flaw", "Downplay the flaw to management", "Blame someone else"], answer: "Delay the launch to fix the flaw" },
+            { topic: "Decision Making", question: "In a meeting, two team members have a disagreement. Do you:", options: ["Let them argue it out", "Take one side and end the argument", "Listen to both perspectives and help find a compromise", "End the meeting and reschedule"], answer: "Listen to both perspectives and help find a compromise" },
+            { topic: "Decision Making", question: "You are leading a project. A junior team member suggests a radical, unproven idea. Do you:", options: ["Dismiss it as too risky", "Adopt it immediately", "Evaluate the pros and cons of the idea with the team", "Let the junior member lead a small pilot project to test the idea"], answer: "Evaluate the pros and cons of the idea with the team" },
+            { topic: "Decision Making", question: "You need to hire a new team member. The top candidate has a great resume but a weak interview performance. Do you:", options: ["Hire them based on their resume", "Reject them based on the interview", "Give them a second interview or a skills test", "Hire the second-best candidate"], answer: "Give them a second interview or a skills test" },
+            // Creative Thinking (10 questions)
+            { topic: "Creative Thinking", question: "What is an alternative use for a paperclip?", options: ["Holding papers together", "A key for a SIM card tray", "A tool for fixing a zipper", "All of the above"], answer: "All of the above" },
+            { topic: "Creative Thinking", question: "You need to create a new product. What is a way to make a common object, like a chair, more innovative?", options: ["Make it a different color", "Make it out of a new material, like recycled plastic", "Add more cushions", "Add wheels to it"], answer: "Make it out of a new material, like recycled plastic" },
+            { topic: "Creative Thinking", question: "If you were to invent a new holiday, what would it be for?", options: ["A day off work", "A day to celebrate pets", "A day to thank essential workers", "A day to explore new things"], answer: "A day to explore new things" },
+            { topic: "Creative Thinking", question: "How would you solve the problem of urban traffic congestion?", options: ["Add more roads", "Encourage public transport and cycling", "Ban all cars", "Increase the cost of gas"], answer: "Encourage public transport and cycling" },
+            { topic: "Creative Thinking", question: "You are given a blank canvas. What do you do with it?", options: ["Paint a landscape", "Paint an abstract piece", "Use it as a backdrop for a sculpture", "Use it as a projector screen"], answer: "Paint an abstract piece" },
+            { topic: "Creative Thinking", question: "What is a common item that could be used as a communication device in a fantasy world?", options: ["A mirror", "A rock", "A leaf", "A magic wand"], answer: "A magic wand" },
+            { topic: "Creative Thinking", question: "What is an unusual way to use a smartphone?", options: ["As a calculator", "As a flashlight", "As a virtual reality headset", "As a remote control for your TV"], answer: "As a virtual reality headset" },
+            { topic: "Creative Thinking", question: "You have a budget of $100 to start a business. What's a creative idea?", options: ["Open a lemonade stand", "Buy and resell items online", "Offer a neighborhood dog-walking service", "Start a blog and monetize it with ads"], answer: "Buy and resell items online" },
+            { topic: "Creative Thinking", question: "How would you make a school a more fun and engaging place?", options: ["Add more homework", "Change the school uniform", "Create interactive learning spaces and hands-on projects", "Make classes longer"], answer: "Create interactive learning spaces and hands-on projects" },
+            { topic: "Creative Thinking", question: "What is a new product that combines two existing products in a novel way?", options: ["A phone with a keyboard", "A watch with a camera", "A spoon and a fork (spork)", "A TV and a computer"], answer: "A spoon and a fork (spork)" },
+            // Leadership Skills (10 questions)
+            { topic: "Leadership Skills", question: "A team member makes a mistake. As a leader, you should:", options: ["Blame them publicly to set an example", "Take responsibility for the mistake and work with them to fix it", "Ignore the mistake", "Report them to a higher authority"], answer: "Take responsibility for the mistake and work with them to fix it" },
+            { topic: "Leadership Skills", question: "How do you motivate your team to achieve a difficult goal?", options: ["Threaten them with consequences if they fail", "Offer a financial reward and celebrate small wins", "Do the entire task yourself", "Tell them the goal is impossible"], answer: "Offer a financial reward and celebrate small wins" },
+            { topic: "Leadership Skills", question: "A team member is struggling. What is the most effective approach?", options: ["Tell them they are a failure", "Provide constructive feedback and offer mentorship", "Assign them a simpler task", "Let them figure it out on their own"], answer: "Provide constructive feedback and offer mentorship" },
+            { topic: "Leadership Skills", question: "Your team is facing a conflict. A good leader would:", options: ["Let them resolve it on their own", "Step in and mediate a solution", "Take the side of the more experienced team member", "Ignore it and hope it goes away"], answer: "Step in and mediate a solution" },
+            { topic: "Leadership Skills", question: "How do you build trust with your team?", options: ["By being unpredictable", "By being transparent and honest", "By being strict and demanding", "By giving them no autonomy"], answer: "By being transparent and honest" },
+            { topic: "Leadership Skills", question: "What is the best way to handle a team member who has a good idea but poor communication skills?", options: ["Ignore their idea", "Ask them to write a formal report", "Help them articulate their idea in a meeting", "Let them present the idea alone, without support"], answer: "Help them articulate their idea in a meeting" },
+            { topic: "Leadership Skills", question: "You need to make a tough decision that might be unpopular. Do you:", options: ["Make the decision and announce it without explanation", "Consult with your team and explain the reasoning behind the decision", "Let someone else make the decision", "Avoid making the decision altogether"], answer: "Consult with your team and explain the reasoning behind the decision" },
+            { topic: "Leadership Skills", question: "How do you show appreciation for your team's hard work?", options: ["By saying nothing", "By giving a generic 'good job'", "By publicly recognizing their contributions and giving specific praise", "By making them work harder"], answer: "By publicly recognizing their contributions and giving specific praise" },
+            { topic: "Leadership Skills", question: "What is a key quality of a good leader?", options: ["Micromanagement", "Empathy", "Arrogance", "Indecisiveness"], answer: "Empathy" },
+            { topic: "Leadership Skills", question: "You are leading a project that is falling behind schedule. Do you:", options: ["Work late every night by yourself to catch up", "Hold a team meeting to identify bottlenecks and re-assign tasks", "Blame the team for being slow", "Give up on the project"], answer: "Hold a team meeting to identify bottlenecks and re-assign tasks" },
+            // Spatial Awareness (10 questions)
+            { topic: "Spatial Awareness", question: "Which of the following 3D shapes can be formed from this 2D net?", options: ["Cube", "Pyramid", "Cylinder", "Cone"], answer: "Cube" },
+            { topic: "Spatial Awareness", question: "If a clock shows 3:00, what is the angle between the hour and minute hands?", options: ["30 degrees", "60 degrees", "90 degrees", "180 degrees"], answer: "90 degrees" },
+            { topic: "Spatial Awareness", question: "If you are facing North and turn 90 degrees clockwise, which direction are you now facing?", options: ["East", "South", "West", "North"], answer: "East" },
+            { topic: "Spatial Awareness", question: "Which geometric shape has 4 equal sides and 4 right angles?", options: ["Rhombus", "Square", "Rectangle", "Trapezoid"], answer: "Square" },
+            { topic: "Spatial Awareness", question: "You are looking at a house from the front. If you walk around to the back, what view do you have?", options: ["The front of the house", "The back of the house", "The side of the house", "The roof of the house"], answer: "The back of the house" },
+            { topic: "Spatial Awareness", question: "Which of these is not a platonic solid?", options: ["Tetrahedron", "Cube", "Dodecahedron", "Cylinder"], answer: "Cylinder" },
+            { topic: "Spatial Awareness", question: "If a mirror is placed to the left of a word, which way will the word appear to be written in the mirror?", options: ["Backwards", "Upside down", "Normally", "Cannot be determined"], answer: "Backwards" },
+            { topic: "Spatial Awareness", question: "A cube has 6 faces. How many vertices does it have?", options: ["4", "6", "8", "12"], answer: "8" },
+            { topic: "Spatial Awareness", question: "Which shape can a sheet of paper be folded into?", options: ["A sphere", "A cone", "A cylinder", "A pyramid"], answer: "A cylinder" },
+            { topic: "Spatial Awareness", question: "If you draw a line from the center of a circle to any point on its circumference, what is it called?", options: ["Diameter", "Radius", "Chord", "Arc"], answer: "Radius" }
+        ];
+
+        const careerPaths = {
+            "Engineering": {
+                description: "Excellent problem-solving, logical reasoning, and technical skills suggest a career in engineering. This field requires analytical thinking to design, build, and maintain structures, machines, and systems.",
+                resources: [
+                    { name: "Coursera: Engineering Courses", url: "https://www.coursera.org/courses/engineering" },
+                    { name: "Khan Academy: Engineering", url: "https://www.khanacademy.org/science/engineering" },
+                    { name: "YouTube: Veritasium", url: "https://www.youtube.com/user/1veritasium" }
+                ]
+            },
+            "Data Science": {
+                description: "Your strong numerical aptitude, data interpretation, and analytical skills are a great match for a career in data science. This field involves extracting insights from data to solve complex problems.",
+                resources: [
+                    { name: "DataCamp", url: "https://www.datacamp.com/" },
+                    { name: "Kaggle", url: "https://www.kaggle.com/" },
+                    { name: "YouTube: StatQuest with Josh Starmer", url: "https://www.youtube.com/c/joshstarmer" }
+                ]
+            },
+            "Management": {
+                description: "High scores in leadership, decision-making, and verbal communication indicate a future in management. This path focuses on leading teams, strategic planning, and operational efficiency.",
+                resources: [
+                    { name: "Harvard Business Review", url: "https://hbr.org/" },
+                    { name: "edX: Business & Management", url: "https://www.edx.org/learn/business-management" },
+                    { name: "YouTube: Simon Sinek", url: "https://www.youtube.com/c/SimonSinek" }
+                ]
+            },
+            "Design": {
+                description: "Your creative thinking and spatial awareness suggest a career in design. This includes graphic design, UI/UX design, or product design, where creativity is key to solving problems visually.",
+                resources: [
+                    { name: "Adobe XD", url: "https://www.adobe.com/products/xd.html" },
+                    { name: "Figma", url: "https://www.figma.com/" },
+                    { name: "YouTube: The Futur", url: "https://www.youtube.com/c/thefutur" }
+                ]
+            },
+            "Medicine": {
+                description: "Strong analytical skills and a methodical approach are vital for a career in medicine. This field demands continuous learning and a high degree of precision in diagnosis and treatment.",
+                resources: [
+                    { name: "Medscape", url: "https://www.medscape.com/" },
+                    { name: "Coursera: Health & Medicine", url: "https://www.coursera.org/courses?query=health%20and%20medicine" },
+                    { name: "YouTube: Osmosis", url: "https://www.youtube.com/c/Osmosis" }
+                ]
+            },
+            "Law": {
+                description: "Your verbal ability, logical reasoning, and decision-making skills are perfect for a career in law. This profession requires meticulous attention to detail, persuasive communication, and a strong sense of justice.",
+                resources: [
+                    { name: "ABA: Law School Admission", url: "https://www.americanbar.org/groups/legal_education/resources/law_school_admission/" },
+                    { name: "Cornell Law School Legal Information Institute", url: "https://www.law.cornell.edu/" },
+                    { name: "YouTube: The Law of Self Defense", url: "https://www.youtube.com/c/LawOfSelfDefense" }
+                ]
+            }
+        };
+
+        const topicToCareerMap = {
+            "Logical Reasoning": ["Engineering", "Law", "Data Science"],
+            "Numerical Aptitude": ["Data Science", "Engineering", "Finance"],
+            "Analytical Skills": ["Data Science", "Management", "Law"],
+            "Verbal Ability & Communication": ["Law", "Management", "Marketing"],
+            "Data Interpretation": ["Data Science", "Finance", "Business Analysis"],
+            "Technical Proficiency": ["Engineering", "Data Science", "IT"],
+            "Decision Making": ["Management", "Law", "Business Analysis"],
+            "Creative Thinking": ["Design", "Marketing", "Content Creation"],
+            "Leadership Skills": ["Management", "Law", "Entrepreneurship"],
+            "Spatial Awareness": ["Design", "Architecture", "Engineering"],
+        };
+
+        document.addEventListener("DOMContentLoaded", () => {
+            // DOM Elements
+            const startPage = document.getElementById("start-page");
+            const testPage = document.getElementById("test-page");
+            const resultPage = document.getElementById("result-page");
+            const startBtn = document.getElementById("start-btn");
+            const homeBtn = document.getElementById("home-btn");
+            const usernameInput = document.getElementById("username");
+            const resultUsernameTitle = document.getElementById("result-username-title");
+
+            const topicTitle = document.getElementById("topic-title");
+            const questionCounter = document.getElementById("question-counter");
+            const progressBar = document.getElementById("progress-bar");
+            const questionText = document.getElementById("question-text");
+            const optionsContainer = document.getElementById("options-container");
+            const prevBtn = document.getElementById("prev-btn");
+            const nextBtn = document.getElementById("next-btn");
+
+            const scoreDisplay = document.getElementById("score-display");
+            const topicList = document.getElementById("topic-list");
+            const careerPathsContainer = document.getElementById("career-paths-container");
+
+            // State Variables
+            const topics = [...new Set(questions.map(q => q.topic))];
+            let currentTopicIndex = 0;
+            let currentQuestionIndex = 0;
+            let userAnswers = [];
+            let isTestActive = false;
+            let username = "";
+            let topicQuestions = [];
+
+            // --- Core Functions ---
+
+            function showPage(pageId) {
+                const pages = document.querySelectorAll('.page');
+                pages.forEach(page => page.classList.remove('active'));
+                document.getElementById(pageId).classList.add('active');
+            }
+
+            function startTest() {
+                username = usernameInput.value.trim();
+                if (!username) {
+                    alert("Please enter your name to start the test.");
+                    return;
+                }
+                
+                currentQuestionIndex = 0;
+                currentTopicIndex = 0;
+                userAnswers = new Array(questions.length).fill(null);
+                isTestActive = true;
+                
+                // Set up questions for the first topic
+                topicQuestions = questions.filter(q => q.topic === topics[currentTopicIndex]);
+                showPage("test-page");
+                loadQuestion();
+            }
+
+            function loadQuestion() {
+                if (!isTestActive) return;
+
+                const currentQuestion = topicQuestions[currentQuestionIndex];
+                
+                topicTitle.textContent = ${topics[currentTopicIndex]};
+                questionCounter.textContent = Question ${currentQuestionIndex + 1} of ${topicQuestions.length};
+                progressBar.style.width = ${(((currentTopicIndex) * 10) + currentQuestionIndex + 1) / questions.length * 100}%;
+
+                // Add the question number to the question text
+                const globalQuestionNumber = questions.findIndex(q => q.question === currentQuestion.question) + 1;
+                questionText.textContent = ${globalQuestionNumber}. ${currentQuestion.question};
+
+                optionsContainer.innerHTML = "";
+
+                currentQuestion.options.forEach(option => {
+                    const optionDiv = document.createElement("div");
+                    optionDiv.classList.add("option");
+                    optionDiv.textContent = option;
+                    optionDiv.addEventListener("click", () => selectOption(optionDiv, option));
+                    optionsContainer.appendChild(optionDiv);
+                });
+
+                // Update navigation button states
+                prevBtn.style.visibility = currentQuestionIndex === 0 && currentTopicIndex === 0 ? 'hidden' : 'visible';
+                
+                // Change button text based on position
+                if (currentTopicIndex === topics.length - 1 && currentQuestionIndex === topicQuestions.length - 1) {
+                    nextBtn.textContent = "Submit Test";
+                    nextBtn.classList.remove('nav-btn');
+                    nextBtn.classList.add('submit-btn');
+                } else if (currentQuestionIndex === topicQuestions.length - 1) {
+                    nextBtn.textContent = "Next Topic";
+                    nextBtn.classList.add('nav-btn');
+                    nextBtn.classList.remove('submit-btn');
+                } else {
+                    nextBtn.textContent = "Next";
+                    nextBtn.classList.add('nav-btn');
+                    nextBtn.classList.remove('submit-btn');
+                }
+            }
+            
+            function selectOption(optionElement, optionValue) {
+                const selectedOption = optionsContainer.querySelector(".option.selected");
+                if (selectedOption) {
+                    selectedOption.classList.remove("selected");
+                }
+                optionElement.classList.add("selected");
+
+                const globalIndex = questions.findIndex(q => q.question === topicQuestions[currentQuestionIndex].question);
+                userAnswers[globalIndex] = optionValue;
+            }
+
+            function navigateQuestions(direction) {
+                if (direction === 'next') {
+                    if (currentQuestionIndex < topicQuestions.length - 1) {
+                        currentQuestionIndex++;
+                    } else if (currentTopicIndex < topics.length - 1) {
+                        currentTopicIndex++;
+                        currentQuestionIndex = 0;
+                        topicQuestions = questions.filter(q => q.topic === topics[currentTopicIndex]);
+                    } else {
+                        // End of test
+                        submitTest();
+                        return;
+                    }
+                } else if (direction === 'prev') {
+                    if (currentQuestionIndex > 0) {
+                        currentQuestionIndex--;
+                    } else if (currentTopicIndex > 0) {
+                        currentTopicIndex--;
+                        topicQuestions = questions.filter(q => q.topic === topics[currentTopicIndex]);
+                        currentQuestionIndex = topicQuestions.length - 1;
+                    }
+                }
+                loadQuestion();
+            }
+
+            function submitTest() {
+                const confirmed = confirm("Are you sure you want to submit the test? You cannot go back.");
+                if (!confirmed) return;
+
+                isTestActive = false;
+                calculateAndDisplayResults();
+                showPage("result-page");
+            }
+
+            function calculateAndDisplayResults() {
+                let correctAnswers = 0;
+                const topicScores = {};
+                const topicTotalQuestions = {};
+                topics.forEach(topic => {
+                    topicScores[topic] = 0;
+                    topicTotalQuestions[topic] = 0;
+                });
+
+                questions.forEach((question, index) => {
+                    topicTotalQuestions[question.topic]++;
+                    if (userAnswers[index] === question.answer) {
+                        correctAnswers++;
+                        topicScores[question.topic]++;
+                    }
+                });
+
+                resultUsernameTitle.textContent = Hello, ${username}! Here are your results.;
+                const totalScore = correctAnswers;
+                scoreDisplay.textContent = Your Score: ${totalScore} / ${questions.length};
+                displayTopicPerformance(topicScores, topicTotalQuestions);
+                recommendCareerPaths(topicScores, topicTotalQuestions);
+            }
+
+            function displayTopicPerformance(scores, totals) {
+                topicList.innerHTML = "";
+                for (const topic in scores) {
+                    const percentage = (scores[topic] / totals[topic]) * 100;
+                    const listItem = document.createElement("li");
+                    listItem.classList.add("topic-item");
+                    listItem.textContent = ${topic}: ${scores[topic]} / ${totals[topic]} (${percentage.toFixed(0)}%);
+                    if (percentage > 70) {
+                        listItem.classList.add("high");
+                    } else if (percentage < 40) {
+                        listItem.classList.add("low");
+                    } else {
+                        listItem.classList.add("medium");
+                    }
+                    topicList.appendChild(listItem);
+                }
+            }
+
+            function recommendCareerPaths(scores, totals) {
+                careerPathsContainer.innerHTML = "";
+                const topicStrengths = [];
+                for (const topic in scores) {
+                    const percentage = (scores[topic] / totals[topic]) * 100;
+                    if (percentage > 70) {
+                        topicStrengths.push(topic);
+                    }
+                }
+
+                const recommendedCareers = new Set();
+                topicStrengths.forEach(topic => {
+                    const careerMatches = topicToCareerMap[topic];
+                    if (careerMatches) {
+                        careerMatches.forEach(career => recommendedCareers.add(career));
+                    }
+                });
+                
+                if (recommendedCareers.size === 0) {
+                    const sortedTopics = Object.keys(scores).sort((a, b) => (scores[b] / totals[b]) - (scores[a] / totals[a]));
+                    sortedTopics.slice(0, 3).forEach(topic => {
+                        const careerMatches = topicToCareerMap[topic];
+                        if (careerMatches) {
+                            careerMatches.forEach(career => recommendedCareers.add(career));
+                        }
+                    });
+                }
+
+                if (recommendedCareers.size === 0) {
+                    const noRec = document.createElement("p");
+                    noRec.textContent = "Based on your results, we recommend exploring a wide range of fields. Try taking the test again after further preparation.";
+                    careerPathsContainer.appendChild(noRec);
+                    return;
+                }
+
+                recommendedCareers.forEach(careerName => {
+                    const pathData = careerPaths[careerName];
+                    if (pathData) {
+                        const careerDiv = document.createElement("div");
+                        careerDiv.classList.add("career-path");
+                        
+                        careerDiv.innerHTML = `
+                            <h4>${careerName}</h4>
+                            <p>${pathData.description}</p>
+                            <h5>Resources & Links:</h5>
+                            <ul>
+                                ${pathData.resources.map(res => <li><a href="${res.url}" target="_blank">${res.name}</a></li>).join('')}
+                            </ul>
+                        `;
+                        careerPathsContainer.appendChild(careerDiv);
+                    }
+                });
+            }
+
+            // Event Listeners
+            startBtn.addEventListener("click", startTest);
+            homeBtn.addEventListener("click", () => {
+                showPage("start-page");
+                usernameInput.value = "";
+            });
+            prevBtn.addEventListener("click", () => navigateQuestions('prev'));
+            nextBtn.addEventListener("click", () => navigateQuestions('next'));
+        });
+    </script>
+</body>
+</html>

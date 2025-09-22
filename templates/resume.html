@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="./static/images/pogo.png">
+  
+    <title>Nextora</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f7f6;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        .app-container {
+            display: flex;
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .input-form {
+            flex: 1;
+            background: #fff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+        }
+        .input-form h1 {
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .input-form h2 {
+            color: #34495e;
+            border-bottom: 2px solid #bdc3c7;
+            padding-bottom: 5px;
+            margin-top: 25px;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 14px;
+        }
+        textarea {
+            resize: vertical;
+        }
+        .input-form button {
+            background-color: #3498db;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+            width: 100%;
+        }
+        .input-form button:hover {
+            background-color: #2980b9;
+        }
+        .resume-preview {
+            flex: 1;
+            background: #fff;
+            padding: 40px;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            word-wrap: break-word;
+            min-height: 800px;
+        }
+        .resume-preview h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 5px;
+        }
+        .resume-preview .contact-info {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 20px;
+        }
+        .resume-preview .section-header {
+            border-bottom: 2px solid #bdc3c7;
+            padding-bottom: 5px;
+            margin-top: 25px;
+            color: #34495e;
+        }
+        .resume-preview h3 {
+            margin-top: 15px;
+            margin-bottom: 5px;
+        }
+        .resume-preview p {
+            margin: 0;
+            font-size: 14px;
+        }
+        .resume-preview ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .resume-preview li {
+            margin-bottom: 5px;
+        }
+        .work-entry, .education-entry {
+            border: 1px solid #e0e0e0;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 4px;
+            position: relative;
+        }
+        .remove-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            cursor: pointer;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+        @media (max-width: 768px) {
+            .app-container {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <div class="input-form">
+            <h1>Dynamic Resume Builder</h1>
+            <section class="user-info">
+                <h2>Personal Information</h2>
+                <input type="text" id="name" placeholder="Your Full Name">
+                <input type="text" id="title" placeholder="Professional Title">
+                <input type="email" id="email" placeholder="Email Address">
+                <input type="tel" id="phone" placeholder="Phone Number">
+                <input type="text" id="linkedin" placeholder="LinkedIn Profile URL">
+                <textarea id="summary" placeholder="Write a professional summary here..."></textarea>
+            </section>
+
+            <section class="work-experience">
+                <h2>Work Experience</h2>
+                <div id="work-container">
+                    </div>
+                <button type="button" onclick="addWorkEntry()">+ Add Work Experience</button>
+            </section>
+
+            <section class="education">
+                <h2>Education</h2>
+                <div id="education-container">
+                    </div>
+                <button type="button" onclick="addEducationEntry()">+ Add Education</button>
+            </section>
+
+            <section class="skills">
+                <h2>Skills</h2>
+                <textarea id="skills" placeholder="List your skills (e.g., HTML, CSS, JavaScript)"></textarea>
+            </section>
+
+            <button type="button" id="download-btn">Download as PDF</button>
+        </div>
+
+        <div class="resume-preview" id="resume-output">
+            </div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initial content generation
+            updateResume();
+
+            // Event listeners for all input fields to update the resume in real-time
+            const formElements = document.querySelectorAll('input, textarea');
+            formElements.forEach(el => el.addEventListener('input', updateResume));
+
+            // Event listener for the download button
+            document.getElementById('download-btn').addEventListener('click', () => {
+                const element = document.getElementById('resume-output');
+                html2pdf().from(element).save('resume.pdf');
+            });
+
+            // Add initial work and education entries
+            addWorkEntry();
+            addEducationEntry();
+        });
+
+        function updateResume() {
+            const name = document.getElementById('name').value;
+            const title = document.getElementById('title').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const linkedin = document.getElementById('linkedin').value;
+            const summary = document.getElementById('summary').value;
+            const skills = document.getElementById('skills').value;
+
+            let resumeHtml = `
+                <header>
+                    <h1>${name || 'Your Name'}</h1>
+                    <p class="contact-info">
+                        ${title || 'Professional Title'} | 
+                        ${email ? Email: ${email} : ''}
+                        ${phone ? ` | Phone: ${phone}` : ''}
+                        ${linkedin ? ` | <a href="${linkedin}">LinkedIn</a>` : ''}
+                    </p>
+                </header>
+                ${summary ? `
+                <section>
+                    <h2 class="section-header">Summary</h2>
+                    <p>${summary}</p>
+                </section>` : ''}
+            `;
+
+            // Process Work Experience
+            const workEntries = document.querySelectorAll('.work-entry');
+            if (workEntries.length > 0) {
+                let workHtml = <section><h2 class="section-header">Work Experience</h2>;
+                workEntries.forEach(entry => {
+                    const company = entry.querySelector('.work-company').value;
+                    const position = entry.querySelector('.work-position').value;
+                    const dates = entry.querySelector('.work-dates').value;
+                    const description = entry.querySelector('.work-description').value;
+
+                    if (company && position) {
+                        workHtml += `
+                            <h3>${position} at ${company}</h3>
+                            <p><em>${dates}</em></p>
+                            <p>${description}</p>
+                        `;
+                    }
+                });
+                workHtml += </section>;
+                resumeHtml += workHtml;
+            }
+
+            // Process Education
+            const educationEntries = document.querySelectorAll('.education-entry');
+            if (educationEntries.length > 0) {
+                let educationHtml = <section><h2 class="section-header">Education</h2>;
+                educationEntries.forEach(entry => {
+                    const school = entry.querySelector('.edu-school').value;
+                    const degree = entry.querySelector('.edu-degree').value;
+                    const dates = entry.querySelector('.edu-dates').value;
+                    
+                    if (school && degree) {
+                        educationHtml += `
+                            <h3>${degree} at ${school}</h3>
+                            <p><em>${dates}</em></p>
+                        `;
+                    }
+                });
+                educationHtml += </section>;
+                resumeHtml += educationHtml;
+            }
+
+            // Process Skills
+            if (skills) {
+                resumeHtml += `
+                    <section>
+                        <h2 class="section-header">Skills</h2>
+                        <p>${skills}</p>
+                    </section>
+                `;
+            }
+
+            document.getElementById('resume-output').innerHTML = resumeHtml;
+        }
+
+        function createWorkEntryHtml() {
+            const uniqueId = Date.now();
+            return `
+                <div class="work-entry">
+                    <button type="button" class="remove-btn" onclick="removeEntry(this)">X</button>
+                    <input type="text" class="work-company" placeholder="Company Name" oninput="updateResume()">
+                    <input type="text" class="work-position" placeholder="Position" oninput="updateResume()">
+                    <input type="text" class="work-dates" placeholder="Dates (e.g., 2020 - Present)" oninput="updateResume()">
+                    <textarea class="work-description" placeholder="Description of your role and achievements" oninput="updateResume()"></textarea>
+                </div>
+            `;
+        }
+
+        function createEducationEntryHtml() {
+            const uniqueId = Date.now();
+            return `
+                <div class="education-entry">
+                    <button type="button" class="remove-btn" onclick="removeEntry(this)">X</button>
+                    <input type="text" class="edu-school" placeholder="School/University" oninput="updateResume()">
+                    <input type="text" class="edu-degree" placeholder="Degree/Certification" oninput="updateResume()">
+                    <input type="text" class="edu-dates" placeholder="Dates (e.g., 2016 - 2020)" oninput="updateResume()">
+                </div>
+            `;
+        }
+
+        function addWorkEntry() {
+            document.getElementById('work-container').insertAdjacentHTML('beforeend', createWorkEntryHtml());
+        }
+
+        function addEducationEntry() {
+            document.getElementById('education-container').insertAdjacentHTML('beforeend', createEducationEntryHtml());
+        }
+
+        function removeEntry(button) {
+            button.parentNode.remove();
+            updateResume();
+        }
+    </script>
+</body>
+</html>

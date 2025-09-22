@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+ 
+  <link rel="icon" href="./static/images/pogo.png">
+  <title>Nextora</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body {
+  background: linear-gradient(135deg, #6EE7B7, #3B82F6);
+  margin: 0;
+  font-family: "Segoe UI", sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+.chat-container {
+  display: flex;
+  flex-direction: column;
+  height: 80vh;
+  width: 100%;
+  max-width: 600px;   /* ✅ keeps design centered on large screens */
+  padding: 1rem;
+  box-sizing: border-box;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.bubble {
+  max-width: 75%;
+  padding: 12px 16px;
+  border-radius: 18px;
+  margin: 8px 0;
+  word-wrap: break-word;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+.user {
+  background: #2563EB;
+  color: white;
+  align-self: flex-end;
+}
+
+.bot {
+  background: #F3F4F6;
+  color: #111827;
+  align-self: flex-start;
+  font-style: italic;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ✅ Responsive Tweaks */
+@media (max-width: 768px) {
+  .chat-container {
+    max-width: 100%;
+    padding: 0.8rem;
+  }
+  .bubble {
+    max-width: 85%;  /* allow bubbles to take more space on tablets */
+  }
+}
+
+@media (max-width: 480px) {
+  .chat-container {
+    height: 90vh;    /* give more space on small screens */
+    padding: 0.6rem;
+  }
+  .bubble {
+    max-width: 95%;  /* bubbles nearly full width on mobile */
+    font-size: 0.9rem;
+    padding: 10px 14px;
+  }
+}
+
+  </style>
+</head>
+<body class="flex items-center justify-center min-h-screen">
+  <div class="w-full max-w-2xl bg-white/80 backdrop-blur-md rounded-2xl shadow-2xl p-4 flex flex-col">
+    <h2 class="text-2xl font-bold text-center text-gray-800 mb-3">Nextora</h2>
+
+    <!-- Chat Area -->
+    <div id="chat" class="chat-container flex flex-col p-3 bg-gray-100 rounded-xl"></div>
+
+    <!-- Input -->
+    <div class="mt-3 flex">
+      <input
+        id="userInput"
+        type="text"
+        placeholder="Type your message..."
+        class="flex-1 p-3 rounded-xl border focus:outline-none focus:ring-2 focus:ring-blue-400"
+      />
+      <button
+        onclick="sendMessage()"
+        class="ml-2 bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-xl shadow-md"
+      >
+        Send
+      </button>
+    </div>
+  </div>
+
+  <script>
+    const chatBox = document.getElementById("chat");
+    const userInput = document.getElementById("userInput");
+    let typingDiv = null;
+
+    function addMessage(message, sender) {
+      const msgDiv = document.createElement("div");
+      msgDiv.classList.add("bubble", sender);
+      msgDiv.textContent = message;
+      chatBox.appendChild(msgDiv);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function showTyping() {
+      typingDiv = document.createElement("div");
+      typingDiv.classList.add("bubble", "bot");
+      typingDiv.textContent = "typing...";
+      chatBox.appendChild(typingDiv);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function removeTyping() {
+      if (typingDiv) {
+        typingDiv.remove();
+        typingDiv = null;
+      }
+    }
+
+    async function sendMessage() {
+      const text = userInput.value.trim();
+      if (!text) return;
+
+      // show user message
+      addMessage(text, "user");
+      userInput.value = "";
+
+      // show typing indicator
+      showTyping();
+
+      try {
+        const response = await fetch("/ask_gemini", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: text }),
+        });
+
+        const data = await response.json();
+        removeTyping();
+
+        if (data.reply) {
+          addMessage(data.reply, "bot");
+        } else {
+          addMessage("Sorry, something went wrong.", "bot");
+        }
+      } catch (err) {
+        console.error(err);
+        removeTyping();
+        addMessage("⚠️ Network error. Try again later.", "bot");
+      }
+    }
+
+    // Send on Enter key
+    userInput.addEventListener("keypress", function (e) {
+      if (e.key === "Enter") {
+        sendMessage();
+      }
+    });
+  </script>
+</body>
+</html>

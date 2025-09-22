@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="./static/images/pogo.png">
+  <title>Nextora</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { font-family: 'Inter', sans-serif; background: #f0f4f8; }
+    .faq-item { border: 1px solid #e2e8f0; border-radius: 10px; background: white; margin-bottom: 1rem; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.05); transition: box-shadow 0.3s ease; }
+    .faq-item:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+    .faq-question { cursor: pointer; padding: 1.25rem; font-weight: 700; display: flex; justify-content: space-between; align-items: center; background-color: #2563eb; color: white; }
+    .faq-answer { overflow: hidden; padding: 0 1.25rem; height: 0; transition: height 0.4s ease, padding 0.4s ease; background-color: #f9fafb; }
+    .faq-arrow { transition: transform 0.4s ease; }
+    .faq-arrow.open { transform: rotate(90deg); }
+    .faq-answer.open { padding: 1rem 1.25rem; }
+    .search-container { margin-bottom: 2rem; text-align: center; }
+    .search-input { padding: 0.75rem; width: 100%; max-width: 600px; border-radius: 8px; border: 1px solid #ddd; font-size: 1.125rem; transition: border-color 0.3s ease; }
+    .search-input:focus { outline: none; border-color: #2563eb; box-shadow: 0 0 5px rgba(37, 99, 235, 0.5); }
+    .no-results { display: none; text-align: center; margin-top: 1rem; font-weight: bold; color: #ef4444; }
+  </style>
+</head>
+<body class="text-gray-800">
+
+<header class="bg-blue-600 text-white p-6 text-center">
+  <h1 class="text-4xl font-bold">Nextora FAQs</h1>
+  <p class="mt-2 text-lg">Frequently Asked Questions to help you get started and succeed</p>
+</header>
+
+<main class="max-w-5xl mx-auto p-6">
+
+  <section class="search-container">
+    <input type="text" id="faq-search" class="search-input" placeholder="🔍 Search questions...">
+  </section>
+
+  <section id="faq-container">
+
+    <!-- FAQ 1 -->
+    <div class="faq-item">
+      <div class="faq-question">
+        How do I find nearby colleges using Nextora?
+        <span class="faq-arrow">&#9654;</span>
+      </div>
+      <div class="faq-answer">
+        <p>Use the Nearby College Finder by enabling location access. You can explore degree colleges in your area with detailed course descriptions, eligibility criteria, and campus videos. Admission deadlines are displayed so you never miss a registration date.</p>
+      </div>
+    </div>
+
+    <!-- FAQ 2 -->
+    <div class="faq-item">
+      <div class="faq-question">
+        How can I build a professional resume on Nextora?
+        <span class="faq-arrow">&#9654;</span>
+      </div>
+      <div class="faq-answer">
+        <p>The Resume Builder guides you step-by-step. Add your personal info, education, skills, and experiences. Customize the layout and export as a professional PDF to make a strong impression on recruiters.</p>
+      </div>
+    </div>
+
+    <!-- FAQ 3 -->
+    <div class="faq-item">
+      <div class="faq-question">
+        What kind of career guidance does Nextora provide?
+        <span class="faq-arrow">&#9654;</span>
+      </div>
+      <div class="faq-answer">
+        <p>Answer questions about your skills and interests, and Nextora generates personalized career suggestions. Gain insights about emerging industries, job market trends, and educational pathways tailored to you.</p>
+      </div>
+    </div>
+
+    <!-- FAQ 4 -->
+    <div class="faq-item">
+      <div class="faq-question">
+        How can I prepare for interviews using Nextora?
+        <span class="faq-arrow">&#9654;</span>
+      </div>
+      <div class="faq-answer">
+        <p>Nextora provides practice questions, aptitude tests, and expert interview tips. Track your progress and build confidence to succeed in real interviews with thorough preparation.</p>
+      </div>
+    </div>
+
+    <!-- FAQ 5 -->
+    <div class="faq-item">
+      <div class="faq-question">
+        Can I use Nextora’s AI chatbot for career-related questions?
+        <span class="faq-arrow">&#9654;</span>
+      </div>
+      <div class="faq-answer">
+        <p>The AI-powered chatbot answers career queries instantly. Ask about degree options, job trends, eligibility, and more. Receive helpful insights to make informed career decisions in real-time.</p>
+      </div>
+    </div>
+
+  </section>
+
+  <p id="faq-no-results" class="no-results">⚠ No matching questions found.</p>
+
+</main>
+
+<script>
+  // Accordion functionality
+  const faqQuestions = document.querySelectorAll('.faq-question');
+
+  faqQuestions.forEach(q => {
+    q.addEventListener('click', () => {
+      const answer = q.nextElementSibling;
+      const arrow = q.querySelector('.faq-arrow');
+
+      // Collapse any open answer except this
+      document.querySelectorAll('.faq-answer').forEach(a => {
+        if (a !== answer && a.style.height && a.style.height !== '0px') {
+          a.style.height = '0px';
+          a.classList.remove('open');
+          a.previousElementSibling.querySelector('.faq-arrow').classList.remove('open');
+        }
+      });
+
+      if (answer.style.height && answer.style.height !== '0px') {
+        // Collapse
+        answer.style.height = answer.scrollHeight + "px"; // set current height
+        requestAnimationFrame(() => { answer.style.height = '0px'; });
+        answer.classList.remove('open');
+        arrow.classList.remove('open');
+      } else {
+        // Expand
+        answer.style.height = answer.scrollHeight + "px";
+        answer.classList.add('open');
+        arrow.classList.add('open');
+
+        answer.addEventListener('transitionend', function handler() {
+          if (answer.classList.contains('open')) answer.style.height = 'auto';
+          answer.removeEventListener('transitionend', handler);
+        });
+      }
+    });
+  });
+
+  // FAQ search functionality
+  const searchInput = document.getElementById('faq-search');
+  const faqItems = document.querySelectorAll('.faq-item');
+  const noResults = document.getElementById('faq-no-results');
+
+  searchInput.addEventListener('input', () => {
+    const query = searchInput.value.toLowerCase();
+    let matches = 0;
+
+    faqItems.forEach(item => {
+      const questionText = item.querySelector('.faq-question').textContent.toLowerCase();
+      const answerText = item.querySelector('.faq-answer').textContent.toLowerCase();
+
+      if (questionText.includes(query) || answerText.includes(query)) {
+        item.style.display = 'block';
+        matches++;
+      } else {
+        item.style.display = 'none';
+      }
+    });
+
+    noResults.style.display = matches ? 'none' : 'block';
+  });
+
+  // Adjust open answers on window resize
+  window.addEventListener('resize', () => {
+    document.querySelectorAll('.faq-answer.open').forEach(answer => {
+      answer.style.height = answer.scrollHeight + "px";
+    });
+  });
+</script>
+
+</body>
+</html>
