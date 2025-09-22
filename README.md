@@ -1,2 +1,2 @@
-# Nextora-SIH2025-
+# NextoraSIH2025
 One-Stop Personalized Career &amp; Education Advisor
