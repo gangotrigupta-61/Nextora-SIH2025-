@@ -5,46 +5,61 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="icon" href="./static/images/pogo.png">
-  
-    <title>Nextora</title>
+    <title>Nextora Help Center</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
         body {
-            font-family: 'Inter', sans-serif;
+            font-family: 'Poppins', sans-serif;
             background: #f0f4f8;
+            color: #334155;
+        }
+
+        .header-bg {
+            background-image: linear-gradient(to right, #6366f1, #3b82f6);
+            /* A gradient for a more dynamic feel */
         }
 
         .accordion-item {
             border: 1px solid #e2e8f0;
-            border-radius: 10px;
+            border-radius: 12px;
             background: white;
-            margin-bottom: 1rem;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
             overflow: hidden;
-            transition: box-shadow 0.3s ease;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
         .accordion-item:hover {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
         }
 
         .accordion-header {
             cursor: pointer;
-            padding: 1.25rem;
+            padding: 1.5rem;
             font-weight: 600;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background-color: #2563eb;
+            background-color: #4f46e5;
             color: white;
-            border-radius: 10px;
+            border-radius: 12px 12px 0 0;
+            /* Rounded corners on the top */
         }
 
         .accordion-content {
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.5s ease, padding 0.5s ease;
-            padding: 0 1.25rem;
+            transition: max-height 0.6s ease-in-out, padding 0.6s ease-in-out;
+            padding: 0 1.5rem;
+            color: #4a5568;
+        }
+
+        .accordion-content.open {
+            padding: 1.5rem;
+            overflow-y: auto;
         }
 
         .accordion-arrow {
@@ -55,53 +70,83 @@
             transform: rotate(90deg);
         }
 
-        .accordion-content.open {
-            padding: 1.25rem;
-            overflow-y: auto;
+        .feature-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-top: 1rem;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
         }
 
         .search-container {
-            margin-bottom: 2rem;
-            text-align: center;
+            margin-bottom: 2.5rem;
+            position: relative;
         }
 
         .search-input {
-            padding: 0.75rem;
+            padding: 0.9rem 1.2rem;
             width: 100%;
-            max-width: 600px;
-            border-radius: 8px;
-            border: 1px solid #ddd;
-            font-size: 1.125rem;
-            transition: border-color 0.3s ease;
+            max-width: 700px;
+            border-radius: 30px;
+            border: 2px solid #ddd;
+            font-size: 1.1rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            background: white;
+            padding-left: 3.5rem;
         }
 
         .search-input:focus {
             outline: none;
-            border-color: #2563eb;
-            box-shadow: 0 0 5px rgba(37, 99, 235, 0.5);
+            border-color: #4f46e5;
+            box-shadow: 0 0 8px rgba(79, 70, 229, 0.4);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #9ca3af;
         }
 
         .no-results {
             display: none;
             text-align: center;
-            margin-top: 1rem;
+            margin-top: 1.5rem;
             font-weight: bold;
             color: #ef4444;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
     </style>
 </head>
 
 <body class="text-gray-800">
 
-    <header class="bg-blue-600 text-white p-6 text-center">
-        <h1 class="text-4xl font-bold">Nextora Help Center</h1>
-        <p class="mt-2 text-lg">Your guide to using Nextora’s powerful career planning tools</p>
+    <header class="header-bg text-white p-8 text-center shadow-lg">
+        <h1 class="text-4xl md:text-5xl font-bold tracking-tight">Your Path Forward Starts Here</h1>
+        <p class="mt-4 text-lg md:text-xl font-light">Explore powerful career tools and get the answers you need.</p>
     </header>
 
-    <main class="max-w-5xl mx-auto p-6">
+    <main class="max-w-6xl mx-auto p-6">
 
         <section class="search-container">
-            <input type="text" id="search-input" class="search-input" placeholder="🔍 Search help topics..." />
+            <svg class="search-icon h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+            </svg>
+            <input type="text" id="search-input" class="search-input" placeholder="Search for a tool or topic...">
         </section>
 
         <section id="accordion-container">
@@ -112,11 +157,9 @@
                     <span class="accordion-arrow">&#9654;</span>
                 </div>
                 <div class="accordion-content">
-                    <p>Quickly locate nearby degree colleges based on your current location. Explore detailed course information, eligibility criteria, infrastructure videos, admission deadlines, and more – all in one place.</p>
-                    
-                    
-                    <p>Additional information about Nearby College Finder...</p>
-                    
+                    <p>Discover the best degree colleges right in your neighborhood. Our *Nearby College Finder* provides a comprehensive guide to local institutions, complete with detailed course information, admission deadlines, and eligibility criteria. You can even watch *videos* of the campus and infrastructure to get a real feel for the college before you visit!</p>
+                    <img src="https://images.unsplash.com/photo-1541339907198-e087568855a9?ixlib=rb-4.0.3&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max"
+                        alt="A student walking on a beautiful, modern college campus" class="feature-image">
                 </div>
             </div>
 
@@ -126,7 +169,9 @@
                     <span class="accordion-arrow">&#9654;</span>
                 </div>
                 <div class="accordion-content">
-                    <p>Build a professional resume step-by-step using intuitive templates. Add your education, skills, work experience, and download a polished PDF to impress recruiters instantly.</p>
+                    <p>Land your dream job with a stunning resume. Our *Resume Builder* makes it easy to create a professional, recruiter-friendly CV in minutes. Just follow the step-by-step prompts to add your education, skills, and experience, then choose from our collection of modern, impactful templates. Download a polished PDF and start applying with confidence.</p>
+                    <img src="static/images/pogo.png"
+                        alt="A professional desk setup with a resume and a cup of coffee" class="feature-image">
                 </div>
             </div>
 
@@ -136,7 +181,9 @@
                     <span class="accordion-arrow">&#9654;</span>
                 </div>
                 <div class="accordion-content">
-                    <p>Answer a few simple questions about your strengths and preferences, and Nextora generates personalized career path suggestions.</p>
+                    <p>Unsure about your future? Get a personalized career roadmap. By answering a few simple questions about your strengths and interests, Nextora's *Personalized Career Guidance* tool suggests career paths tailored just for you. We provide insights into what the jobs are like, the skills you'll need, and the typical salary you can expect.</p>
+                    <img src="https://images.unsplash.com/photo-1621677332210-911b51e08436?ixlib=rb-4.0.3&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max"
+                        alt="A person contemplating a career path with a glowing path in the distance" class="feature-image">
                 </div>
             </div>
 
@@ -146,7 +193,9 @@
                     <span class="accordion-arrow">&#9654;</span>
                 </div>
                 <div class="accordion-content">
-                    <p>Practice frequently asked interview questions, aptitude tests, and get expert guidance on how to answer difficult questions with confidence, improving your chances of landing your dream job.</p>
+                    <p>Walk into your next interview feeling prepared and confident. Our *Interview Preparation Tools* offer a suite of resources, including practice questions, aptitude tests, and expert tips on how to handle even the toughest queries. You'll learn to articulate your value and make a lasting impression.</p>
+                    <img src="https://images.unsplash.com/photo-1573496359142-b8d87734b4a2?ixlib=rb-4.0.3&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max"
+                        alt="A professional job interview in a modern office setting" class="feature-image">
                 </div>
             </div>
 
@@ -156,7 +205,9 @@
                     <span class="accordion-arrow">&#9654;</span>
                 </div>
                 <div class="accordion-content">
-                    <p>Use the AI-powered chatbot to instantly get answers about career options, degree programs, job trends, and more. Ask naturally, and receive helpful, real-time responses to your queries.</p>
+                    <p>Have a question? Get an instant answer. Our *AI-powered Career Chatbot* is your personal career advisor, available 24/7. Ask about degree programs, industry trends, job market forecasts, or even just for some career motivation, and receive helpful, real-time responses to guide your decisions.</p>
+                    <img src="https://images.unsplash.com/photo-1620712948235-5122556554b5?ixlib=rb-4.0.3&q=80&fm=jpg&crop=entropy&cs=tinysrgb&w=1080&fit=max"
+                        alt="A futuristic robot head with glowing blue light, representing an AI chatbot" class="feature-image">
                 </div>
             </div>
 
@@ -168,43 +219,40 @@
 
     <script>
         const headers = document.querySelectorAll('.accordion-header');
+        const searchInput = document.getElementById('search-input');
+        const accordionItems = document.querySelectorAll('.accordion-item');
+        const noResults = document.getElementById('no-results');
+
+        function closeAllAccordions() {
+            document.querySelectorAll('.accordion-content').forEach(c => {
+                c.style.maxHeight = null;
+                c.classList.remove('open');
+            });
+            document.querySelectorAll('.accordion-arrow').forEach(a => a.classList.remove('open'));
+        }
 
         headers.forEach(header => {
             header.addEventListener('click', () => {
                 const content = header.nextElementSibling;
                 const arrow = header.querySelector('.accordion-arrow');
-
                 const isOpen = content.classList.contains('open');
 
-                // Close all
-                document.querySelectorAll('.accordion-content').forEach(c => {
-                    c.style.maxHeight = null;
-                    c.classList.remove('open');
-                });
-                document.querySelectorAll('.accordion-arrow').forEach(a => a.classList.remove('open'));
+                closeAllAccordions();
 
                 if (!isOpen) {
                     content.classList.add('open');
                     arrow.classList.add('open');
-
-                    content.style.maxHeight = '0px';
-                    content.style.padding = '1.25rem';
-
-                    setTimeout(() => {
-                        content.style.maxHeight = '300px'; // Fixed max height with scroll
-                    }, 10);
+                    content.style.maxHeight = content.scrollHeight + 'px'; // Dynamic height
                 }
             });
         });
 
         // Search Functionality
-        const searchInput = document.getElementById('search-input');
-        const accordionItems = document.querySelectorAll('.accordion-item');
-        const noResults = document.getElementById('no-results');
-
         searchInput.addEventListener('input', () => {
             const query = searchInput.value.toLowerCase();
             let matches = 0;
+
+            closeAllAccordions();
 
             accordionItems.forEach(item => {
                 const headerText = item.querySelector('.accordion-header').textContent.toLowerCase();
@@ -219,6 +267,13 @@
             });
 
             noResults.style.display = matches ? 'none' : 'block';
+        });
+
+        // Adjust accordion height on window resize
+        window.addEventListener('resize', () => {
+            document.querySelectorAll('.accordion-content.open').forEach(content => {
+                content.style.maxHeight = content.scrollHeight + 'px';
+            });
         });
     </script>
 

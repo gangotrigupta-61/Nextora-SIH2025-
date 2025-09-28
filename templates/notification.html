@@ -1,0 +1,118 @@
+<!-- Notification Panel -->
+<div class="notification-panel" id="notification-panel"></div>
+
+<style>
+  /* Centered Notification Panel */
+  .notification-panel {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 400px;
+    max-width: 90%;
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 9999;
+    animation: fadeInUp 0.5s ease;
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translate(-50%, -60%); }
+    to { opacity: 1; transform: translate(-50%, -50%); }
+  }
+
+  /* Individual notification item */
+  .notification-item {
+    padding: 15px 20px;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    background: linear-gradient(135deg, #f5f7fa, #e0e7ff);
+    border-left: 5px solid #1a73e8;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+
+  .notification-item:hover {
+    background: linear-gradient(135deg, #e0e7ff, #c7d2fe);
+    transform: scale(1.02);
+  }
+
+  .notification-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #1a202c;
+  }
+
+  .notification-time {
+    font-size: 12px;
+    color: #718096;
+  }
+</style>
+
+<script>
+  // Store all notifications
+  let allNotifications = [];
+
+  // Add a notification
+  function addNotification(title, type="info", details=null) {
+    const time = new Date().toLocaleTimeString();
+    const notification = { title, type, time, details };
+    allNotifications.unshift(notification);
+    renderNotifications();
+    showToast(title, type);
+  }
+
+  // Render notifications in the centered panel
+  function renderNotifications() {
+    const panel = document.getElementById("notification-panel");
+    panel.innerHTML = "";
+
+    allNotifications.slice(0,5).forEach(n => {
+      const item = document.createElement("div");
+      item.classList.add("notification-item");
+      item.innerHTML = `
+        <div class="notification-title">${n.title}</div>
+        <div class="notification-time">${n.time}</div>
+        ${n.details ? <p style="font-size:14px; color:#4a5568;">${n.details}</p> : ""}
+      `;
+      panel.appendChild(item);
+    });
+  }
+
+  // Show toast for immediate feedback
+  function showToast(message, type="info") {
+    const toast = document.createElement("div");
+    toast.style.position = "fixed";
+    toast.style.top = "20px";
+    toast.style.left = "50%";
+    toast.style.transform = "translateX(-50%)";
+    toast.style.background = type==="success" ? "#38a169" : type==="error" ? "#e53e3e" : type==="warning" ? "#dd6b20" : "#3182ce";
+    toast.style.color = "#fff";
+    toast.style.padding = "12px 20px";
+    toast.style.borderRadius = "12px";
+    toast.style.boxShadow = "0 5px 15px rgba(0,0,0,0.2)";
+    toast.style.fontWeight = "600";
+    toast.style.opacity = "0";
+    toast.style.zIndex = "10000";
+    toast.innerText = message;
+    document.body.appendChild(toast);
+    setTimeout(() => { toast.style.opacity = "1"; toast.style.transition = "all 0.5s ease"; }, 10);
+    setTimeout(() => { toast.style.opacity = "0"; setTimeout(()=>toast.remove(),500); }, 3000);
+  }
+
+  // -------------------
+  // DEMO TRIGGERS
+  // -------------------
+  setTimeout(() => { addNotification("✅ Resume Saved Successfully!", "success", "Your latest resume has been saved in Resume Builder."); }, 2000);
+  setTimeout(() => { addNotification("📝 Profile Updated", "info", "You updated your education details."); }, 4000);
+  setTimeout(() => { addNotification("📊 Skill Gap Analysis Ready", "warning", "We found 3 skills you should improve for Data Analyst roles."); }, 6000);
+  setTimeout(() => { addNotification("💡 New Interview Tips Added", "info", "Check the Guidance section for practice questions."); }, 8000);
+  setTimeout(() => { addNotification("✅ Login success", "Thank you"); }, 10000);
+</script>

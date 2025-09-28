@@ -77,7 +77,7 @@
 
   <script>
     let collegeData = []; 
-    let map, markers = [], userMarker, userCircle;
+    let map, markers = [];
 
     const naacGrades = ["A++", "A+", "A", "B+", "B"];
     const collegeTypes = ["Government", "Autonomous", "Private"];
@@ -112,23 +112,7 @@
           markers = [];
         }
 
-        // Clear previous user location marker if exists
-        if (userMarker) {
-          map.removeLayer(userMarker);
-          map.removeLayer(userCircle);
-        }
-
-        // If lat/lon provided by GPS, mark user location
-        if (location === null) {
-          userMarker = L.marker([lat, lon], {icon: L.icon({
-            iconUrl: "https://cdn-icons-png.flaticon.com/512/64/64113.png",
-            iconSize: [30, 30]
-          })}).addTo(map).bindPopup("📍 You are here").openPopup();
-
-          userCircle = L.circle([lat, lon], {radius: 2000, color: "blue", fillOpacity: 0.1}).addTo(map);
-        }
-
-        // Overpass API query for colleges
+        // Overpass API query
         const overpassQuery = `
           [out:json];
           node["amenity"="university"](around:200000,${lat},${lon});
@@ -136,8 +120,7 @@
         `;
         const overpassRes = await fetch("https://overpass-api.de/api/interpreter", {
           method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
-          body: "data=" + encodeURIComponent(overpassQuery)
+          body: overpassQuery
         });
         const overpassData = await overpassRes.json();
 

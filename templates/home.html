@@ -605,7 +605,7 @@
 
             
             <!-- Language Switcher Button -->
-            <button id="language-switcher-btn" title="Select Language">
+            <button id="languageswitcherbtn" title="Select Language">
                 <i class="fa-solid fa-globe"></i>
             </button>
             
@@ -622,7 +622,7 @@
                 <i class="fa-solid fa-sun"></i>
             </button>
             
-            <button><a href="{{ url_for('chatbot') }}">🤖</a></li></button>
+            
 
          <!-- Feature Not Working -->
 
@@ -633,12 +633,12 @@
                     <span id="notification-count">0</span>
                 </button>
                 <div id="notification-dropdown" class="dropdown notification-dropdown">
-                    <ul id="notification-list">
-                        <li>Please log in to see notifications</li>
-                    </ul>
-                    <a href="#" class="view-all">View All</a>
+                    
+                    <a href="{{ url_for('notification') }}" class="view-all">View Notification</a>
                 </div>
             </div>
+
+            <button><a href="{{ url_for('chatbot') }}">🤖</a></li></button>
         </div>
     </nav>
     
@@ -679,15 +679,17 @@
             <p>Create a professional resume and cover letter with our easy-to-use tools.</p>
         </a>
 
+        <a href="{{ url_for('gap') }}" class="card" id="card-notifications">
+           <h3>📈 Skill Gap Analyzer</h3>
+            <p>Find out what skills you need to learn to get your dream job.</p>
+        </a>
+
         <a href="{{ url_for('interview') }}" class="card" id="card-jobs">
            <h3>💾 Interview</h3>
             <p>Quick access to your saved career articles, job listings, and materials.</p>
         </a>
 
-        <a href="{{ url_for('gap') }}" class="card" id="card-notifications">
-           <h3>📈 Skill Gap Analyzer</h3>
-            <p>Find out what skills you need to learn to get your dream job.</p>
-        </a>
+        
 
         <a href="{{ url_for('college') }}" class="card" id="card-saved">
            <h3>📚 Nearby Degree Colleges</h3>
@@ -1112,7 +1114,7 @@
     }
     
     // Language switching functionality
-    languageSwitcherBtn.addEventListener('click', () => {
+    languageswitcherbtn.addEventListener('click', () => {
         if (currentLang === 'en') {
             currentLang = 'hi'; // Switch to Hindi
         } else {

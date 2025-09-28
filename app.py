@@ -202,6 +202,11 @@ def chatbot():
 def guidance():
     return render_template("guidance.html")
 
+
+@app.route("/notification")
+def notification():
+    return render_template("notification.html")
+
 @app.route("/aptitude")
 def aptitude():
     return render_template("aptitude.html")
@@ -263,16 +268,10 @@ def resume():
 def interview():
     return render_template("interview.html")
 
-@app.route("/notification")
-def notification():
-    return render_template("notification.html")
 
 @app.route("/mentor")
 def mentor():
     return render_template("mentor.html")
-
-
-
 
 
 @app.route("/FAQs")
